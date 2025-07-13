@@ -1,0 +1,239 @@
+## **UI Development Prompt: Fashion Carbon Calculator - Sustainable Living Edition**
+
+### **Project Overview**
+Create a warm, approachable UI design for a fashion carbon calculator MVP targeting eco-conscious, budget-aware professionals (ages 25-55). The design should balance environmental responsibility with accessible luxury through a natural, earthy aesthetic.
+
+### **Visual Design Requirements**
+
+**Natural Sustainable Aesthetic:**
+
+**Color Palette:**
+- Primary: Sage green (#87A96B) - conveys growth and sustainability
+- Accent: Soft Clay (#E8D5C4) - warm, earthy neutral for highlights
+- Background: Clean white (#FFFFFF) as base
+- Secondary Background: Soft Clay (#E8D5C4) for cards and sections
+- Text Primary: Dark charcoal (#1C1C1C)
+- Text Secondary: Warm gray (#6B7280) for supporting text
+- Success States: Sage green (#87A96B)
+- Error States: Muted rust (#C65D00)
+- Shadows: rgba(135, 169, 107, 0.1) for brand consistency
+
+**Typography:**
+- Headings: Modern serif (Playfair Display or similar)
+- Body: Clean sans-serif (Inter, Open Sans)
+- CO2 Values: Large, light weight (48px, weight 300)
+- Letter-spacing: Comfortable spacing (0.3-0.8px)
+
+**Design Elements:**
+- Generous layouts with 20-28px padding
+- Soft Clay backgrounds for elevated sections
+- Sage green for all interactive elements
+- Minimal borders - use color and shadow for separation
+- Subtle background textures at 5-8% opacity
+
+### **Low-Fidelity Wireframe Layouts**
+
+**Screen 1: Item Selection**
+```
+┌─────────────────────────────────────┐
+│                                     │
+│  Fashion Carbon Calculator          │ ← Desktop Sidebar
+│  ─────────────────────────         │   ┌──────────────┐
+│                                     │   │ Smart Guide  │
+│  SELECT YOUR ITEM                   │   │              │
+│                                     │   │ Did you know?│
+│  ┌─────────────────────────────┐   │   │              │
+│  │ [icon] T-Shirt              │   │   │ A typical    │
+│  │        Classic cotton    >  │   │   │ t-shirt =    │
+│  └─────────────────────────────┘   │   │ 7.5 kg CO2e  │
+│                                     │   │              │
+│  ┌─────────────────────────────┐   │   │ Progress     │
+│  │ [icon] Jeans                │   │   │ Level 2      │
+│  │        Denim essentials  >  │   │   │ ████░░░░     │
+│  └─────────────────────────────┘   │   │              │
+│                                     │   │ Eco Score    │
+│  ┌─────────────────────────────┐   │   │ 126 points   │
+│  │ [icon] Dress                │   │   │              │
+│  │        Everyday wear     >  │   │   └──────────────┘
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ [icon] Shoes                │   │
+│  │        Footwear basics   >  │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Step 1 of 4              [Next →] │
+└─────────────────────────────────────┘
+```
+
+**Screen 2: Material Selection**
+```
+┌─────────────────────────────────────┐
+│                                     │
+│  ← Back    T-SHIRT MATERIAL         │ ← Desktop Sidebar
+│  ─────────────────────────         │   ┌──────────────┐
+│                                     │   │ Material     │
+│  CHOOSE YOUR FABRIC                 │   │ Impact       │
+│                                     │   │              │
+│  ┌─────────────────────────────┐   │   │ Best Choice: │
+│  │ [icon] 100% Organic Cotton  │   │   │ [icon] Hemp  │
+│  │        Sustainable choice ✓  │   │   │ -52% carbon  │
+│  └─────────────────────────────┘   │   │              │
+│                                     │   │ Your Choice: │
+│  ┌─────────────────────────────┐   │   │ Cotton       │
+│  │ [icon] 100% Cotton          │   │   │ 7.5 kg CO2e  │
+│  │        Classic material  >  │   │   │              │
+│  └─────────────────────────────┘   │   │ Pro Tip:     │
+│                                     │   │ Organic saves│
+│  ┌─────────────────────────────┐   │   │ 27% carbon   │
+│  │ [icon] Cotton/Poly Blend    │   │   │              │
+│  │        50/50 mix         >  │   │   └──────────────┘
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ [icon] Custom Mix           │   │
+│  │        Set percentages   >  │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Step 2 of 4              [Next →] │
+└─────────────────────────────────────┘
+```
+
+**Screen 3: Manufacturing Location**
+```
+┌─────────────────────────────────────┐
+│                                     │
+│  ← Back    MANUFACTURING LOCATION   │ ← Desktop Sidebar
+│  ─────────────────────────         │   ┌──────────────┐
+│                                     │   │ Location     │
+│  WHERE WAS IT MADE?                 │   │ Matters      │
+│                                     │   │              │
+│  ┌─────────────────────────────┐   │   │ Cleanest:    │
+│  │ [icon] Global Average       │   │   │ [flag] EU    │
+│  │        Industry standard ✓  │   │   │ -15% carbon  │
+│  └─────────────────────────────┘   │   │              │
+│                                     │   │ Your Impact: │
+│  ┌─────────────────────────────┐   │   │ Calculating..│
+│  │ [flag] China                │   │   │              │
+│  │        40% higher impact >  │   │   │ Goal:        │
+│  └─────────────────────────────┘   │   │ Choose EU    │
+│                                     │   │ factories    │
+│  ┌─────────────────────────────┐   │   │ +10 points   │
+│  │ [flag] India                │   │   │              │
+│  │        25% higher impact >  │   │   └──────────────┘
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ [flag] EU/Portugal          │   │
+│  │        Cleaner energy    >  │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Step 3 of 4          [Calculate →] │
+└─────────────────────────────────────┘
+```
+
+**Screen 4: Results & Insights**
+```
+┌─────────────────────────────────────┐
+│                                     │
+│  YOUR FASHION FOOTPRINT             │ ← Desktop Sidebar
+│  ─────────────────────────         │   ┌──────────────┐
+│                                     │   │ You earned   │
+│  ┌─────────────────────────────┐   │   │              │
+│  │      10.5 kg CO2e           │   │   │ +15 points   │
+│  │      ████████████░░         │   │   │              │
+│  │      Manufacturing Impact   │   │   │ Level up!    │
+│  └─────────────────────────────┘   │   │ ████████░░   │
+│                                     │   │              │
+│  Equivalent to:                     │   │ Badges       │
+│  [icon] Driving 42 miles           │   │ ✓ Calculator │
+│  [icon] 1 tree absorbs/month       │   │ ✓ Conscious  │
+│                                     │   │ 🔒 Expert    │
+│  ┌─────────────────────────────┐   │   │              │
+│  │ SMART ALTERNATIVES          │   │   └──────────────┘
+│  │                             │   │
+│  │ Same Price, Less Impact:    │   │
+│  │ • Buy secondhand: 3.2 kg   │   │
+│  │ • Choose hemp: 5.0 kg      │   │
+│  │ • Cost per wear:           │   │
+│  │   $50 ÷ 100 wears = $0.50  │   │
+│  │                             │   │
+│  │ [Explore Options →]         │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  [View Details] [New Calculation]   │
+│  [Share Achievement]                │
+└─────────────────────────────────────┘
+```
+
+### **Color Application Guidelines**
+
+**Interactive Elements:**
+- Primary buttons: Sage green background (#87A96B) with white text (#FFFFFF)
+- Secondary buttons: Soft Clay background (#E8D5C4) with sage green text (#87A96B)
+- Hover states: Darken sage green by 10%, Soft Clay becomes white
+- Selected items: Soft Clay background (#E8D5C4) with 3px sage green left border
+- Unselected items: White background (#FFFFFF)
+
+**Text Hierarchy:**
+- Main headings: Dark charcoal (#1C1C1C) in serif font
+- Subheadings: Dark charcoal (#1C1C1C) in sans-serif
+- Body text: Dark charcoal (#1C1C1C)
+- Supporting text: Warm gray (#6B7280)
+- Success text: Sage green (#87A96B)
+- Error/warning text: Rust (#C65D00)
+
+**Gamification Elements:**
+- Progress bars: Soft Clay background (#E8D5C4) with sage green fill (#87A96B)
+- Achievement badges: Sage green background with white icons
+- Badge borders: 2px soft clay (#E8D5C4)
+- Level indicators: Gradient from soft clay to sage green
+- Points/scores: Sage green text (#87A96B)
+
+**Cards and Containers:**
+- Primary cards: Soft Clay background (#E8D5C4)
+- Secondary cards: White background (#FFFFFF)
+- Sidebar: Soft Clay background (#E8D5C4)
+- Shadows: rgba(135, 169, 107, 0.1) - subtle green tint
+
+**Data Visualization:**
+- CO2 values: Large sage green numbers (#87A96B)
+- Progress meters: Sage green fill on soft clay track
+- Comparison bars: Sage green for user, gray for averages
+- Icons: Sage green (#87A96B) or dark charcoal (#1C1C1C)
+
+### **Figma AI Instructions for High-Fidelity Design**
+
+**Setup Instructions:**
+1. Create a new Figma file with 4 desktop frames (1440x900px)
+2. Import color palette as design tokens
+3. Set up typography styles with specified fonts
+4. Create component library for reusable elements
+
+**Component Creation:**
+1. **Item Selection Cards**: 320px width, 80px height, 12px border radius
+2. **Sidebar Widget**: 280px width, auto height, 16px padding
+3. **Progress Bars**: 200px width, 8px height, 4px border radius
+4. **Primary Button**: Auto width, 48px height, 8px border radius
+5. **Secondary Button**: Auto width, 40px height, 6px border radius
+
+**Design Specifications:**
+- Use Auto Layout for all components with 16-24px spacing
+- Apply subtle shadows: 0px 2px 8px rgba(135, 169, 107, 0.1)
+- Background patterns: Import natural textures at 5-8% opacity
+- Icons: Use Feather Icons or similar, 24px size, 2px stroke
+- Ensure all text passes WCAG AA contrast requirements
+
+**Animation Guidelines:**
+- Hover transitions: 200ms ease
+- Progress bar fills: 600ms ease-out
+- Page transitions: 300ms ease-in-out
+- Micro-interactions on buttons and cards
+
+**Export Settings:**
+- Components: Export as SVG
+- Screens: Export as PNG @2x
+- Create design system documentation
+- Include spacing and sizing tokens
+
+This prompt provides all specifications needed to create a warm, approachable fashion carbon calculator using sage green and soft clay colors, with clear instructions for both low-fidelity wireframing and high-fidelity Figma implementation.
