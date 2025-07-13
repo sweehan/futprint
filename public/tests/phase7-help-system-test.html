@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 7: Help System Test</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/help-system.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #F9FAFB;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #111827;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section h2 {
+            color: #10B981;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        
+        .test-section p {
+            color: #6B7280;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px 8px 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background: #059669;
+        }
+        
+        .btn-secondary {
+            background: #6B7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #4B5563;
+        }
+        
+        .demo-item {
+            background: #F9FAFB;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border: 1px solid #E5E7EB;
+        }
+        
+        .demo-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .calculator-step {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .help-trigger {
+            background: #10B981;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .item-card {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .item-card:hover {
+            border-color: #10B981;
+        }
+        
+        .item-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .disclosure-trigger {
+            background: none;
+            border: none;
+            color: #10B981;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            text-decoration: underline;
+        }
+        
+        .disclosure-trigger:hover {
+            background: #F0FDF4;
+        }
+        
+        .disclosure-indicator {
+            margin-left: 4px;
+            font-weight: bold;
+        }
+        
+        .help-suggestion {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            max-width: 300px;
+            border-left: 4px solid #10B981;
+            animation: slideInUp 0.3s ease;
+        }
+        
+        .help-suggestion-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .help-suggestion-icon {
+            font-size: 20px;
+        }
+        
+        .help-suggestion-text {
+            flex: 1;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .help-suggestion-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .help-suggestion-dismiss {
+            background: none;
+            border: none;
+            color: #6B7280;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .status-working {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .test-section {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            
+            .item-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .help-suggestion {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Phase 7: Help System Test</h1>
+        
+        <!-- Tooltip System Test -->
+        <div class="test-section">
+            <h2>1. Tooltip System</h2>
+            <p>Test interactive tooltips with help content:</p>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Basic Tooltip 
+                    <button class="help-icon" data-tooltip-content="This is a simple tooltip with basic help information." data-tooltip-position="top">?</button>
+                </div>
+                <p>Hover over the help icon above (or tap on mobile) to see a basic tooltip.</p>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Rich Content Tooltip 
+                    <button class="help-icon" data-tooltip="materialComposition" data-tooltip-position="top">?</button>
+                </div>
+                <p>This tooltip shows rich content from the help system with tips and "Learn More" button.</p>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Different Positions
+                    <button class="help-icon" data-tooltip-content="Top tooltip" data-tooltip-position="top">?</button>
+                    <button class="help-icon" data-tooltip-content="Bottom tooltip" data-tooltip-position="bottom">?</button>
+                    <button class="help-icon" data-tooltip-content="Left tooltip" data-tooltip-position="left">?</button>
+                    <button class="help-icon" data-tooltip-content="Right tooltip" data-tooltip-position="right">?</button>
+                </div>
+                <p>Test tooltips in different positions around the trigger.</p>
+            </div>
+        </div>
+        
+        <!-- Modal System Test -->
+        <div class="test-section">
+            <h2>2. Modal System</h2>
+            <p>Test detailed help modals:</p>
+            
+            <button class="btn" onclick="helpModal.show('materialComposition')">Material Composition Help</button>
+            <button class="btn" onclick="helpModal.show('manufacturingLocation')">Manufacturing Location Help</button>
+            <button class="btn" onclick="helpModal.show('lifecycleEmissions')">Lifecycle Emissions Help</button>
+            <button class="btn" onclick="helpModal.show('calculationMethodology')">Calculation Method Help</button>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="testQuickHelp()">Quick Help Modal</button>
+                <button class="btn btn-secondary" onclick="testCalculationHelp()">Calculation Breakdown</button>
+            </div>
+        </div>
+        
+        <!-- Context-Sensitive Help Test -->
+        <div class="test-section">
+            <h2>3. Context-Sensitive Help</h2>
+            <p>Test help that changes based on current step:</p>
+            
+            <div class="calculator-step" id="step-itemSelection">
+                <div class="step-header">
+                    <span class="step-title">Step 1: Select Item Type</span>
+                    <button class="help-trigger" onclick="helpModal.showContextualHelp('itemSelection')">?</button>
+                </div>
+                
+                <div class="item-grid">
+                    <div class="item-card">
+                        <span class="item-emoji">👕</span>
+                        <div>T-shirt</div>
+                    </div>
+                    <div class="item-card">
+                        <span class="item-emoji">👖</span>
+                        <div>Jeans</div>
+                    </div>
+                    <div class="item-card">
+                        <span class="item-emoji">👗</span>
+                        <div>Dress</div>
+                    </div>
+                    <div class="item-card">
+                        <span class="item-emoji">👟</span>
+                        <div>Shoes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-step" id="step-materialSelection">
+                <div class="step-header">
+                    <span class="step-title">Step 2: Material Composition</span>
+                    <button class="help-trigger" onclick="helpModal.showContextualHelp('materialSelection')">?</button>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="display: block; margin-bottom: 16px;">
+                        <input type="radio" name="material" value="single" checked>
+                        100% Single Material
+                        <button class="help-icon" data-tooltip="materialComposition" style="margin-left: 8px;">?</button>
+                    </label>
+                    <label style="display: block; margin-bottom: 16px;">
+                        <input type="radio" name="material" value="blend">
+                        Mixed Materials (50/50 blend)
+                    </label>
+                    <label style="display: block;">
+                        <input type="radio" name="material" value="custom">
+                        Custom Mix
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Help System Test -->
+        <div class="test-section">
+            <h2>4. Mobile-Friendly Help</h2>
+            <p>Test collapsible sections and bottom sheets:</p>
+            
+            <button class="btn" onclick="testBottomSheet()">Show Bottom Sheet (Mobile)</button>
+            <button class="btn" onclick="testFAQSection()">Create FAQ Section</button>
+            <button class="btn" onclick="testStepGuide()">Step-by-Step Guide</button>
+            
+            <div id="faq-container" style="margin-top: 20px;"></div>
+            <div id="step-guide-container" style="margin-top: 20px;"></div>
+        </div>
+        
+        <!-- Progressive Disclosure Test -->
+        <div class="test-section">
+            <h2>5. Progressive Disclosure</h2>
+            <p>Test smart help that reveals information gradually:</p>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Carbon Footprint Calculation
+                    <button class="disclosure-trigger" data-disclosure="calculationMethodology" data-level="1" data-trigger="click">
+                        Learn more <span class="disclosure-indicator">+</span>
+                    </button>
+                </div>
+                <p>Click "Learn more" to see progressive disclosure of calculation details.</p>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Material Impact Explanation
+                    <button class="disclosure-trigger" data-disclosure="materialComposition" data-level="2" data-trigger="click">
+                        Why does this matter? <span class="disclosure-indicator">+</span>
+                    </button>
+                </div>
+                <p>This will show intermediate-level help content with tips.</p>
+            </div>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Auto-Disclosure Example
+                    <span class="disclosure-trigger" data-disclosure="lifecycleEmissions" data-level="1" data-trigger="auto">
+                        (will auto-show after 3 seconds)
+                    </span>
+                </div>
+                <p>Wait a few seconds to see automatic help disclosure.</p>
+            </div>
+            
+            <button class="btn" onclick="testHelpSuggestion()">Test Help Suggestion</button>
+        </div>
+        
+        <!-- Integration Test -->
+        <div class="test-section">
+            <h2>6. Complete Integration Test</h2>
+            <p>Test all help systems working together:</p>
+            
+            <div class="demo-item">
+                <div class="demo-label">
+                    Complete Help Example
+                    <button class="help-icon" data-tooltip="carbonEquivalents">?</button>
+                    <button class="disclosure-trigger" data-disclosure="carbonEquivalents" data-level="2">
+                        More details <span class="disclosure-indicator">+</span>
+                    </button>
+                </div>
+                <p>This demonstrates tooltip + progressive disclosure + modal integration.</p>
+            </div>
+            
+            <button class="btn" onclick="runFullHelpTest()">Run Complete Help Flow</button>
+            
+            <div style="margin-top: 20px;">
+                <div class="status-indicator status-info">
+                    ℹ️ All help systems loaded and ready
+                </div>
+                <div class="status-indicator status-working" id="help-status">
+                    ✅ Interactive help active
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module">
+        // Import help content (simulated for testing)
+        window.HELP_CONTENT = {
+            materialComposition: {
+                id: 'materialComposition',
+                title: "Material Composition",
+                summary: "The fabric content affects carbon footprint significantly. Natural fibers like cotton require water and land but are biodegradable. Synthetics like polyester are petroleum-based but often require less energy to produce.",
+                detailed: `
+                    <h3>How Material Affects Carbon Footprint</h3>
+                    <p>The fabric content affects carbon footprint significantly. Different materials have vastly different environmental impacts:</p>
+                    
+                    <h4>Natural Fibers:</h4>
+                    <ul>
+                        <li><strong>Cotton:</strong> Requires significant water and land but is biodegradable</li>
+                        <li><strong>Hemp:</strong> Low water usage, grows quickly, lowest carbon footprint</li>
+                        <li><strong>Wool:</strong> High emissions due to methane from sheep, but long-lasting</li>
+                        <li><strong>Organic Cotton:</strong> Lower pesticide use but similar water requirements</li>
+                    </ul>
+                    
+                    <h4>Synthetic Fibers:</h4>
+                    <ul>
+                        <li><strong>Polyester:</strong> Petroleum-based but often requires less energy to produce</li>
+                        <li><strong>Recycled Polyester:</strong> Significantly lower footprint by reusing plastic bottles</li>
+                        <li><strong>Nylon:</strong> High energy production but very durable</li>
+                    </ul>
+                    
+                    <p><strong>Tip:</strong> Check your garment's care label for exact percentages. Most fast fashion uses blended materials for cost and performance.</p>
+                `,
+                quickTips: [
+                    "Check the care label for material percentages",
+                    "Natural doesn't always mean lower carbon",
+                    "Blended materials are most common in fast fashion",
+                    "Recycled materials typically have lower impact"
+                ]
+            },
+            manufacturingLocation: {
+                id: 'manufacturingLocation',
+                title: "Manufacturing Location",
+                summary: "Where your clothes are made matters for carbon emissions. Countries with coal-heavy electricity grids have higher emissions.",
+                detailed: `
+                    <h3>Why Location Matters</h3>
+                    <p>Where your clothes are made matters! The carbon footprint varies significantly by country due to different energy sources.</p>
+                    <h4>High Carbon Locations:</h4>
+                    <ul>
+                        <li><strong>China:</strong> Coal-heavy electricity grid increases emissions by 40%</li>
+                        <li><strong>India:</strong> Mixed energy sources, 25% higher than global average</li>
+                    </ul>
+                    <h4>Lower Carbon Locations:</h4>
+                    <ul>
+                        <li><strong>European Union:</strong> Cleaner energy sources, 15% lower emissions</li>
+                        <li><strong>Portugal:</strong> High renewable energy use</li>
+                    </ul>
+                `,
+                quickTips: [
+                    "Check the 'Made in' label on your garment",
+                    "Coal-heavy countries have higher emissions",
+                    "European manufacturing typically cleaner"
+                ]
+            },
+            lifecycleEmissions: {
+                id: 'lifecycleEmissions',
+                title: "Lifecycle Emissions",
+                summary: "Manufacturing is just the beginning. Washing, drying, and disposal add ~30% more emissions.",
+                detailed: `
+                    <h3>Complete Lifecycle Impact</h3>
+                    <p>Manufacturing is just the beginning. Washing, drying, and eventual disposal add approximately 30% more emissions.</p>
+                    <h3>How You Can Reduce Impact:</h3>
+                    <ul>
+                        <li><strong>Wash in cold water</strong> - reduces energy by 90%</li>
+                        <li><strong>Air dry when possible</strong> - eliminates dryer energy</li>
+                        <li><strong>Keep clothes longer</strong> - spreads manufacturing impact over more uses</li>
+                    </ul>
+                `,
+                quickTips: [
+                    "Wash in cold water to reduce energy by 90%",
+                    "Air dry to eliminate dryer energy use",
+                    "Keep clothes longer to spread manufacturing impact"
+                ]
+            },
+            calculationMethodology: {
+                id: 'calculationMethodology',
+                title: "How We Calculate",
+                summary: "Our calculations are based on peer-reviewed research and industry data.",
+                detailed: `
+                    <h3>Calculation Methodology</h3>
+                    <p>Our carbon footprint calculations are based on peer-reviewed research:</p>
+                    <h4>Data Sources:</h4>
+                    <ul>
+                        <li><strong>UK DEFRA 2024:</strong> Government carbon conversion factors</li>
+                        <li><strong>Carbonfact Research 2024:</strong> Industry-specific lifecycle assessments</li>
+                    </ul>
+                `,
+                quickTips: [
+                    "Based on peer-reviewed research",
+                    "Updated quarterly with new data",
+                    "Transparent calculation methodology"
+                ]
+            },
+            carbonEquivalents: {
+                id: 'carbonEquivalents',
+                title: "Carbon Equivalents",
+                summary: "CO2e equivalents help visualize the relative impact compared to everyday activities.",
+                detailed: `
+                    <h3>Understanding Carbon Equivalents</h3>
+                    <p>CO2e (carbon dioxide equivalent) can be hard to visualize. Here's how we calculate everyday comparisons.</p>
+                `,
+                quickTips: [
+                    "Based on EPA and scientific data",
+                    "Helps visualize abstract CO2e numbers",
+                    "Global averages - local values may vary"
+                ]
+            }
+        };
+        
+        window.HELP_BY_STEP = {
+            itemSelection: {
+                primary: 'materialComposition',
+                secondary: ['calculationMethodology']
+            },
+            materialSelection: {
+                primary: 'materialComposition',
+                secondary: ['calculationMethodology']
+            }
+        };
+    </script>
+    
+    <script src="../js/tooltip-system.js"></script>
+    <script src="../js/modal-system.js"></script>
+    <script src="../js/mobile-help.js"></script>
+    <script src="../js/progressive-disclosure.js"></script>
+    
+    <script>
+        // Test functions
+        function testQuickHelp() {
+            helpModal.showQuickHelp(`
+                <h3>Quick Tip</h3>
+                <p>This is a quick help popup with essential information. Perfect for brief explanations without overwhelming detail.</p>
+            `, { title: 'Quick Help' });
+        }
+        
+        function testCalculationHelp() {
+            const sampleCalculation = {
+                item: 'T-shirt',
+                material: '100% Cotton',
+                location: 'China',
+                base: 7.5,
+                materialMultiplier: 1.0,
+                locationMultiplier: 1.4,
+                total: 10.5
+            };
+            
+            helpModal.showCalculationHelp(sampleCalculation);
+        }
+        
+        function testBottomSheet() {
+            const content = `
+                <h3>Material Help</h3>
+                <p>Understanding material composition is crucial for accurate carbon footprint calculations.</p>
+                <ul>
+                    <li>Cotton: High water usage, biodegradable</li>
+                    <li>Polyester: Oil-based, long-lasting</li>
+                    <li>Blends: Most common in fast fashion</li>
+                </ul>
+                <button class="btn" onclick="helpModal.show('materialComposition')" style="margin-top: 16px;">
+                    Learn More
+                </button>
+            `;
+            
+            mobileHelpManager.createBottomSheet(content, {
+                title: 'Material Guide',
+                swipeToClose: true
+            });
+        }
+        
+        function testFAQSection() {
+            const faqData = [
+                {
+                    question: "Why does material matter for carbon footprint?",
+                    answer: "Different materials require different amounts of energy, water, and land to produce. Synthetic materials are petroleum-based while natural fibers require agricultural resources."
+                },
+                {
+                    question: "How accurate are these calculations?",
+                    answer: "Our calculations are based on peer-reviewed research and industry data, updated quarterly. We show ranges to reflect real-world variation."
+                },
+                {
+                    question: "Can I reduce my fashion carbon footprint?",
+                    answer: "Yes! Buy quality items that last longer, wash in cold water, air dry when possible, and choose sustainable materials when available."
+                }
+            ];
+            
+            // Clear step guide container when showing FAQ
+            const stepGuideContainer = document.getElementById('step-guide-container');
+            stepGuideContainer.innerHTML = '';
+            
+            const faqSection = mobileHelpManager.createFAQSection(faqData);
+            const container = document.getElementById('faq-container');
+            container.innerHTML = '';
+            container.appendChild(faqSection);
+        }
+        
+        function testStepGuide() {
+            const steps = [
+                {
+                    title: "Select Your Item",
+                    description: "Choose the type of clothing item you want to calculate. Different items have different baseline carbon footprints."
+                },
+                {
+                    title: "Choose Material",
+                    description: "Select the fabric composition. Check your garment's care label for exact percentages."
+                },
+                {
+                    title: "Manufacturing Location",
+                    description: "Look for the 'Made in' label. Countries with different energy sources have different carbon intensities."
+                },
+                {
+                    title: "View Results",
+                    description: "See your carbon footprint with comparisons to everyday activities and tips for reducing impact."
+                }
+            ];
+            
+            // Clear FAQ container when showing step guide
+            const faqContainer = document.getElementById('faq-container');
+            faqContainer.innerHTML = '';
+            
+            const stepGuide = mobileHelpManager.createStepGuide(steps);
+            const container = document.getElementById('step-guide-container');
+            container.innerHTML = '';
+            container.appendChild(stepGuide);
+        }
+        
+        function testHelpSuggestion() {
+            progressiveDisclosure.showHelpSuggestions([
+                { id: 'materialComposition', priority: 'high', reason: 'Current step help' }
+            ]);
+        }
+        
+        function runFullHelpTest() {
+            // Simulate a complete help interaction flow
+            setTimeout(() => {
+                helpModal.show('materialComposition');
+            }, 500);
+            
+            setTimeout(() => {
+                testHelpSuggestion();
+            }, 3000);
+        }
+        
+        // Auto-run some demonstrations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show a welcome help suggestion after 2 seconds
+            setTimeout(() => {
+                const suggestionElement = document.createElement('div');
+                suggestionElement.className = 'help-suggestion';
+                suggestionElement.innerHTML = `
+                    <div class="help-suggestion-content">
+                        <span class="help-suggestion-icon">👋</span>
+                        <span class="help-suggestion-text">Welcome! Try the help icons and buttons to test the help system.</span>
+                        <button class="help-suggestion-dismiss">&times;</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(suggestionElement);
+                
+                const dismissBtn = suggestionElement.querySelector('.help-suggestion-dismiss');
+                dismissBtn.addEventListener('click', () => {
+                    suggestionElement.remove();
+                });
+                
+                setTimeout(() => {
+                    if (suggestionElement.parentNode) {
+                        suggestionElement.remove();
+                    }
+                }, 8000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

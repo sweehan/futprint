@@ -1,0 +1,882 @@
+/* Help System CSS Styles */
+
+/* === TOOLTIP STYLES === */
+.tooltip {
+  position: fixed;
+  z-index: 10000;
+  background: #1F2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.tooltip.tooltip-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.tooltip.tooltip-mobile {
+  position: fixed;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Tooltip arrows */
+.tooltip-top::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1F2937 transparent transparent transparent;
+}
+
+.tooltip-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #1F2937 transparent;
+}
+
+.tooltip-left::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #1F2937;
+}
+
+.tooltip-right::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #1F2937 transparent transparent;
+}
+
+/* Rich tooltip styling */
+.tooltip-rich {
+  background: #1F2937;
+  color: white;
+  max-width: 350px;
+  padding: 0;
+}
+
+.tooltip-rich .tooltip-header,
+.tooltip-rich .tooltip-content {
+  padding: 12px 16px;
+}
+
+/* Rich tooltip content */
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #374151;
+}
+
+.tooltip-header h4 {
+  margin: 0;
+  color: #F9FAFB;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tooltip-close {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.tooltip-close:hover {
+  color: #F9FAFB;
+  background-color: #374151;
+}
+
+.tooltip-content p {
+  margin: 0 0 12px 0;
+  color: #E5E7EB;
+}
+
+.tooltip-tips {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.tooltip-tips li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  color: #D1D5DB;
+  font-size: 13px;
+}
+
+.tooltip-tips li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #10B981;
+  font-weight: bold;
+}
+
+.tooltip-more {
+  background: #10B981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tooltip-more:hover {
+  background: #059669;
+}
+
+/* === MODAL STYLES === */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10001;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.modal-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.modal-dialog {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.modal-visible .modal-content {
+  transform: scale(1);
+}
+
+/* Modal sizes */
+.modal-small .modal-content {
+  max-width: 400px;
+}
+
+.modal-medium .modal-content {
+  max-width: 600px;
+}
+
+.modal-large .modal-content {
+  max-width: 800px;
+}
+
+.modal-mobile .modal-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-radius: 12px 12px 0 0;
+  position: absolute;
+  bottom: 0;
+  max-height: 80vh;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-title {
+  margin: 0;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.modal-close:hover {
+  color: #374151;
+  background-color: #F3F4F6;
+}
+
+.modal-body {
+  padding: 24px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.modal-body h3 {
+  color: #111827;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.modal-body h4 {
+  color: #111827;
+  font-size: 16px;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+.modal-body ul {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.modal-body li {
+  margin-bottom: 8px;
+}
+
+.modal-body pre {
+  background: #F3F4F6;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.modal-btn-primary {
+  background: #10B981;
+  color: white;
+}
+
+.modal-btn-primary:hover {
+  background: #059669;
+}
+
+.modal-btn-secondary {
+  background: #F9FAFB;
+  color: #374151;
+  border-color: #D1D5DB;
+}
+
+.modal-btn-secondary:hover {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
+
+.modal-secondary-links {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.modal-secondary-links h4 {
+  color: #111827;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.modal-secondary-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-secondary-links li {
+  margin-bottom: 8px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #10B981;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: #059669;
+}
+
+/* Quick help modal */
+.modal-quick-help .modal-content {
+  max-width: 400px;
+  text-align: center;
+}
+
+.quick-help-content {
+  padding: 20px;
+  color: #374151;
+}
+
+/* Calculation help */
+.calculation-help {
+  max-width: 500px;
+}
+
+.calculation-breakdown {
+  background: #F9FAFB;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
+.calc-row.calc-total {
+  border-top: 2px solid #10B981;
+  padding-top: 12px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.calc-label {
+  color: #374151;
+}
+
+.calc-value {
+  color: #111827;
+  font-weight: 500;
+}
+
+.calc-sources {
+  margin-top: 20px;
+}
+
+.calc-sources h4 {
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.calc-sources ul {
+  list-style: none;
+  padding: 0;
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.calc-sources li {
+  margin-bottom: 4px;
+}
+
+/* === HELP ICON STYLES === */
+.help-icon {
+  background: #10B981;
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: background-color 0.2s;
+}
+
+.help-icon:hover {
+  background: #059669;
+}
+
+/* === COLLAPSIBLE HELP SECTIONS === */
+.help-section {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.help-header {
+  background: #F9FAFB;
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.help-header:hover {
+  background: #F3F4F6;
+}
+
+.help-header h4 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+}
+
+.help-toggle {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 18px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.help-toggle:hover {
+  color: #374151;
+  background-color: #E5E7EB;
+}
+
+.help-content {
+  padding: 16px;
+  background: white;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.help-content.help-collapsed {
+  max-height: 0;
+  padding: 0 16px;
+  overflow: hidden;
+}
+
+/* === BOTTOM SHEET STYLES === */
+.bottom-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10002;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.bottom-sheet.bottom-sheet-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bottom-sheet-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.bottom-sheet-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 16px 16px 0 0;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.bottom-sheet-visible .bottom-sheet-content {
+  transform: translateY(0);
+}
+
+.bottom-sheet-header {
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid #E5E7EB;
+  text-align: center;
+}
+
+.bottom-sheet-handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #D1D5DB;
+  border-radius: 2px;
+}
+
+.bottom-sheet-header h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.bottom-sheet-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.bottom-sheet-close:hover {
+  color: #374151;
+  background-color: #F3F4F6;
+}
+
+.bottom-sheet-body {
+  padding: 20px;
+}
+
+/* === FAQ STYLES === */
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.faq-header h3 {
+  color: #111827;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.faq-item {
+  margin-bottom: 16px;
+}
+
+.faq-question {
+  font-weight: 600;
+}
+
+.faq-answer {
+  color: #6B7280;
+}
+
+/* === STEP GUIDE STYLES === */
+.step-guide {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.step-guide-header {
+  background: #F9FAFB;
+  padding: 24px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.step-guide-header h3 {
+  margin: 0 0 16px 0;
+  color: #111827;
+  font-size: 20px;
+  text-align: center;
+}
+
+.step-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.step-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-right: 16px;
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: #10B981;
+  transition: width 0.3s ease;
+}
+
+.step-counter {
+  color: #6B7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.step-guide-content {
+  padding: 24px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.step-item {
+  display: none;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.step-item.step-active {
+  display: flex;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: #10B981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h4 {
+  margin: 0 0 8px 0;
+  color: #111827;
+  font-size: 18px;
+}
+
+.step-content p {
+  margin: 0;
+  color: #6B7280;
+  line-height: 1.6;
+}
+
+.step-image {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.step-guide-controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.step-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #D1D5DB;
+  background: white;
+  color: #374151;
+}
+
+.step-btn:hover:not(:disabled) {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
+
+.step-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.step-next {
+  background: #10B981;
+  color: white;
+  border-color: #10B981;
+}
+
+.step-next:hover:not(:disabled) {
+  background: #059669;
+  border-color: #059669;
+}
+
+/* === RESPONSIVE STYLES === */
+@media (max-width: 768px) {
+  .modal-dialog {
+    padding: 10px;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 16px;
+  }
+  
+  .modal-title {
+    font-size: 18px;
+  }
+  
+  .help-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+  
+  .step-guide {
+    margin: 10px;
+  }
+  
+  .step-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .step-number {
+    margin: 0 0 16px 0;
+  }
+}
+
+/* === UTILITY CLASSES === */
+.modal-open {
+  overflow: hidden;
+}
+
+.help-hidden {
+  display: none;
+}
+
+.help-visible {
+  display: block;
+}
+
+.help-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

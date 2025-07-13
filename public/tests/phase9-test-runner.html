@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 9 Test Runner - Quick View</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        .suite {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #0f0;
+        }
+        .test {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .passed { color: #0f0; }
+        .failed { color: #f00; }
+        .summary {
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phase 9: Calculator Tests - Quick Results</h1>
+    <div id="results">Loading tests...</div>
+    
+    <script src="phase9-calculator-tests.js"></script>
+    <script>
+        window.onload = async function() {
+            const output = document.getElementById('results');
+            
+            try {
+                output.innerHTML = 'Running tests...';
+                const results = await window.CalculatorTests.runTests();
+                
+                let html = `<div class="summary">
+                    Total: ${results.total} | 
+                    Passed: ${results.passed} | 
+                    Failed: ${results.failed} | 
+                    Success Rate: ${Math.round((results.passed/results.total)*100)}%
+                </div>`;
+                
+                results.suites.forEach(suite => {
+                    // Count passed tests in suite
+                    const suitePassed = suite.tests.filter(t => t.passed).length;
+                    
+                    html += `<div class="suite">
+                        <h2>${suite.name} (${suitePassed}/${suite.tests.length})</h2>`;
+                    
+                    suite.tests.forEach(test => {
+                        const status = test.passed ? 'passed' : 'failed';
+                        const icon = test.passed ? '✓' : '✗';
+                        html += `<div class="test ${status}">
+                            ${icon} ${test.name}
+                            ${test.error ? `<br>  Error: ${test.error}` : ''}
+                            ${test.message && !test.passed ? `<br>  ${test.message}` : ''}
+                            ${test.expected !== undefined && !test.passed ? `<br>  Expected: ${test.expected}` : ''}
+                            ${test.actual !== undefined && !test.passed ? `<br>  Actual: ${test.actual}` : ''}
+                        </div>`;
+                    });
+                    
+                    html += '</div>';
+                });
+                
+                output.innerHTML = html;
+            } catch (error) {
+                output.innerHTML = `<div class="failed">Error running tests: ${error.message}<br>${error.stack}</div>`;
+            }
+        };
+    </script>
+</body>
+</html>

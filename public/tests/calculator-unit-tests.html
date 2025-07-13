@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Unit Tests - Phase 9</title>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #111827;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 40px;
+        }
+        
+        .test-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background: #F3F4F6;
+        }
+        
+        .summary-card.total {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+        
+        .summary-card.passed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .summary-card.failed {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        .summary-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .test-controls {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #10B981;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #059669;
+        }
+        
+        .btn-secondary {
+            background: #E5E7EB;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+        
+        .test-suite {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .suite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        
+        .suite-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .suite-status {
+            display: flex;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .status-badge.passed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status-badge.failed {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        .test-case {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s;
+        }
+        
+        .test-case:hover {
+            background: #F3F4F6;
+        }
+        
+        .test-case.passed {
+            border-left: 4px solid #10B981;
+        }
+        
+        .test-case.failed {
+            border-left: 4px solid #EF4444;
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .test-name {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .test-status {
+            font-size: 20px;
+        }
+        
+        .test-details {
+            font-size: 14px;
+            color: #6B7280;
+            display: none;
+        }
+        
+        .test-case.expanded .test-details {
+            display: block;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .test-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .test-message {
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6B7280;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+        
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .collapsible::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .collapsible.expanded::before {
+            transform: rotate(90deg);
+        }
+        
+        .error-trace {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #10B981;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .test-controls {
+                flex-wrap: wrap;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+                margin-top: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Carbon Calculator Unit Tests</h1>
+        <p class="subtitle">Phase 9 - Testing & Validation</p>
+        
+        <!-- Test Summary -->
+        <div class="test-summary" id="testSummary">
+            <div class="summary-card total">
+                <div class="summary-number" id="totalTests">0</div>
+                <div class="summary-label">Total Tests</div>
+            </div>
+            <div class="summary-card passed">
+                <div class="summary-number" id="passedTests">0</div>
+                <div class="summary-label">Passed</div>
+            </div>
+            <div class="summary-card failed">
+                <div class="summary-number" id="failedTests">0</div>
+                <div class="summary-label">Failed</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number" id="passRate">0%</div>
+                <div class="summary-label">Pass Rate</div>
+            </div>
+        </div>
+        
+        <!-- Test Controls -->
+        <div class="test-controls">
+            <button class="btn btn-primary" onclick="runAllTests()">Run All Tests</button>
+            <button class="btn btn-secondary" onclick="clearResults()">Clear Results</button>
+            <button class="btn btn-secondary" onclick="expandAll()">Expand All</button>
+            <button class="btn btn-secondary" onclick="collapseAll()">Collapse All</button>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterTests('all')" data-filter="all">All</button>
+                <button class="filter-btn" onclick="filterTests('passed')" data-filter="passed">Passed</button>
+                <button class="filter-btn" onclick="filterTests('failed')" data-filter="failed">Failed</button>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div id="testResults">
+            <div class="loading">Click "Run All Tests" to begin testing...</div>
+        </div>
+    </div>
+    
+    <!-- Load test file -->
+    <script src="phase9-calculator-tests.js"></script>
+    
+    <script>
+        let currentFilter = 'all';
+        
+        function runAllTests() {
+            const resultsContainer = document.getElementById('testResults');
+            resultsContainer.innerHTML = '<div class="loading">Running tests...</div>';
+            
+            // Run tests after a short delay to show loading state
+            setTimeout(() => {
+                const results = window.CalculatorTests.runTests();
+                displayResults(results);
+                updateSummary(results);
+            }, 100);
+        }
+        
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('testResults');
+            resultsContainer.innerHTML = '';
+            
+            results.suites.forEach(suite => {
+                const suiteElement = createSuiteElement(suite);
+                resultsContainer.appendChild(suiteElement);
+            });
+        }
+        
+        function createSuiteElement(suite) {
+            const suiteDiv = document.createElement('div');
+            suiteDiv.className = 'test-suite';
+            
+            const passedCount = suite.tests.filter(t => t.passed).length;
+            const failedCount = suite.tests.length - passedCount;
+            
+            suiteDiv.innerHTML = `
+                <div class="suite-header">
+                    <h3 class="suite-title collapsible expanded" onclick="toggleSuite(this)">
+                        ${formatSuiteName(suite.name)}
+                    </h3>
+                    <div class="suite-status">
+                        <span class="status-badge passed">${passedCount} passed</span>
+                        <span class="status-badge failed">${failedCount} failed</span>
+                    </div>
+                </div>
+                <div class="suite-tests">
+                    ${suite.tests.map(test => createTestElement(test)).join('')}
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(passedCount / suite.tests.length) * 100}%"></div>
+                </div>
+            `;
+            
+            return suiteDiv;
+        }
+        
+        function createTestElement(test) {
+            const status = test.passed ? 'passed' : 'failed';
+            const icon = test.passed ? '✅' : '❌';
+            
+            return `
+                <div class="test-case ${status}" onclick="toggleTest(this)" data-status="${status}">
+                    <div class="test-header">
+                        <span class="test-name">${test.name}</span>
+                        <span class="test-status">${icon}</span>
+                    </div>
+                    <div class="test-details">
+                        ${test.expected !== undefined ? `
+                            <div class="test-detail-row">
+                                <span>Expected:</span>
+                                <code>${JSON.stringify(test.expected)}</code>
+                            </div>
+                        ` : ''}
+                        ${test.actual !== undefined ? `
+                            <div class="test-detail-row">
+                                <span>Actual:</span>
+                                <code>${JSON.stringify(test.actual)}</code>
+                            </div>
+                        ` : ''}
+                        ${test.message ? `
+                            <div class="test-message">${test.message}</div>
+                        ` : ''}
+                        ${test.error ? `
+                            <div class="error-trace">${test.error}</div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function formatSuiteName(name) {
+            // Convert camelCase to Title Case
+            return name
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^test /, '')
+                .trim()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+        
+        function updateSummary(results) {
+            document.getElementById('totalTests').textContent = results.total;
+            document.getElementById('passedTests').textContent = results.passed;
+            document.getElementById('failedTests').textContent = results.failed;
+            
+            const passRate = results.total > 0 
+                ? Math.round((results.passed / results.total) * 100) 
+                : 0;
+            document.getElementById('passRate').textContent = passRate + '%';
+        }
+        
+        function toggleSuite(element) {
+            element.classList.toggle('expanded');
+            const tests = element.closest('.test-suite').querySelector('.suite-tests');
+            tests.style.display = element.classList.contains('expanded') ? 'block' : 'none';
+        }
+        
+        function toggleTest(element) {
+            element.classList.toggle('expanded');
+        }
+        
+        function expandAll() {
+            document.querySelectorAll('.collapsible').forEach(el => {
+                el.classList.add('expanded');
+                const tests = el.closest('.test-suite').querySelector('.suite-tests');
+                if (tests) tests.style.display = 'block';
+            });
+            document.querySelectorAll('.test-case').forEach(el => {
+                el.classList.add('expanded');
+            });
+        }
+        
+        function collapseAll() {
+            document.querySelectorAll('.collapsible').forEach(el => {
+                el.classList.remove('expanded');
+                const tests = el.closest('.test-suite').querySelector('.suite-tests');
+                if (tests) tests.style.display = 'none';
+            });
+            document.querySelectorAll('.test-case').forEach(el => {
+                el.classList.remove('expanded');
+            });
+        }
+        
+        function filterTests(filter) {
+            currentFilter = filter;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            
+            // Show/hide tests
+            document.querySelectorAll('.test-case').forEach(test => {
+                if (filter === 'all') {
+                    test.style.display = 'block';
+                } else {
+                    test.style.display = test.dataset.status === filter ? 'block' : 'none';
+                }
+            });
+            
+            // Update suite visibility
+            document.querySelectorAll('.test-suite').forEach(suite => {
+                const hasVisibleTests = Array.from(suite.querySelectorAll('.test-case'))
+                    .some(test => test.style.display !== 'none');
+                suite.style.display = hasVisibleTests ? 'block' : 'none';
+            });
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = 
+                '<div class="loading">Click "Run All Tests" to begin testing...</div>';
+            updateSummary({ total: 0, passed: 0, failed: 0 });
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            // Auto-run tests
+            runAllTests();
+        });
+    </script>
+</body>
+</html>

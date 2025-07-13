@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 9 - Error Diagnostic</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; }
+        .info { color: blue; }
+        pre { background: white; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Phase 9 Test Error Diagnostic</h1>
+    <div id="output"></div>
+    
+    <script src="phase9-calculator-tests.js"></script>
+    <script>
+        (async function() {
+            const output = document.getElementById('output');
+            
+            try {
+            // Check if test data is loaded
+            output.innerHTML += '<h2>Test Data Check:</h2>';
+            output.innerHTML += '<pre>';
+            output.innerHTML += `TEST_CARBON_DATA defined: ${typeof TEST_CARBON_DATA !== 'undefined' ? '<span class="success">YES</span>' : '<span class="error">NO</span>'}\n`;
+            output.innerHTML += `CalculatorTests defined: ${typeof window.CalculatorTests !== 'undefined' ? '<span class="success">YES</span>' : '<span class="error">NO</span>'}\n`;
+            output.innerHTML += '</pre>';
+            
+            // Check specific data
+            if (typeof TEST_CARBON_DATA !== 'undefined') {
+                output.innerHTML += '<h2>Data Structure Check:</h2>';
+                output.innerHTML += '<pre>';
+                
+                // Check items
+                output.innerHTML += '<span class="info">Items:</span>\n';
+                Object.entries(TEST_CARBON_DATA.ITEMS).forEach(([id, item]) => {
+                    const breakdown = item.breakdown;
+                    const sum = breakdown ? (breakdown.materials + breakdown.energy + breakdown.transport + breakdown.other) : 0;
+                    output.innerHTML += `  ${id}: baseCarbon=${item.baseCarbon}, breakdown sum=${sum} ${sum !== 100 ? '<span class="error">ERROR!</span>' : '<span class="success">OK</span>'}\n`;
+                });
+                
+                output.innerHTML += '\n<span class="info">Materials:</span>\n';
+                Object.entries(TEST_CARBON_DATA.MATERIALS).forEach(([id, material]) => {
+                    output.innerHTML += `  ${id}: multiplier=${material.multiplier}\n`;
+                });
+                
+                output.innerHTML += '\n<span class="info">Blends:</span>\n';
+                Object.entries(TEST_CARBON_DATA.BLENDS).forEach(([id, blend]) => {
+                    output.innerHTML += `  ${id}: multiplier=${blend.multiplier}\n`;
+                });
+                
+                output.innerHTML += '</pre>';
+            }
+            
+            // Run tests and catch errors
+            output.innerHTML += '<h2>Running Tests:</h2>';
+            try {
+                const results = await window.CalculatorTests.runTests();
+                output.innerHTML += '<pre>';
+                output.innerHTML += `Total tests: ${results.total}\n`;
+                output.innerHTML += `Passed: <span class="success">${results.passed}</span>\n`;
+                output.innerHTML += `Failed: <span class="error">${results.failed}</span>\n\n`;
+                
+                // Show failed tests
+                if (results.failed > 0) {
+                    output.innerHTML += '<span class="error">Failed Tests:</span>\n';
+                    results.suites.forEach(suite => {
+                        suite.tests.forEach(test => {
+                            if (!test.passed) {
+                                output.innerHTML += `\n<span class="error">❌ ${test.name}</span>\n`;
+                                if (test.error) output.innerHTML += `   Error: ${test.error}\n`;
+                                if (test.expected !== undefined) output.innerHTML += `   Expected: ${JSON.stringify(test.expected)}\n`;
+                                if (test.actual !== undefined) output.innerHTML += `   Actual: ${JSON.stringify(test.actual)}\n`;
+                                if (test.message) output.innerHTML += `   Message: ${test.message}\n`;
+                            }
+                        });
+                    });
+                }
+                output.innerHTML += '</pre>';
+            } catch (e) {
+                output.innerHTML += `<pre class="error">Error running tests: ${e.toString()}\n${e.stack}</pre>`;
+            }
+            
+        } catch (e) {
+            output.innerHTML += `<pre class="error">Fatal error: ${e.toString()}\n${e.stack}</pre>`;
+        }
+        })();
+    </script>
+</body>
+</html>

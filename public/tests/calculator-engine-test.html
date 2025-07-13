@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Calculator Engine Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9fafb;
+            color: #111827;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .test-card {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .test-card h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button.secondary {
+            background: #6b7280;
+        }
+        button.secondary:hover {
+            background: #4b5563;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .result h4 {
+            margin: 0 0 10px 0;
+            color: #111827;
+        }
+        .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #10b981;
+            margin: 10px 0;
+        }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .breakdown-item {
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .error {
+            color: #ef4444;
+            padding: 10px;
+            background: #fee;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #10b981;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .equivalents {
+            margin: 15px 0;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 6px;
+        }
+        .impact-level {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        .impact-low { background: #d1fae5; color: #065f46; }
+        .impact-medium { background: #fed7aa; color: #92400e; }
+        .impact-high { background: #fed7d7; color: #991b1b; }
+        .impact-very-high { background: #fee2e2; color: #991b1b; }
+        .recommendations {
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 6px;
+        }
+        .recommendation-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        .all-tests {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .all-tests button {
+            background: #10b981;
+            font-size: 16px;
+            padding: 12px 30px;
+        }
+        .all-tests button:hover {
+            background: #059669;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+        .loading {
+            color: #6b7280;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Carbon Calculator Engine Test</h1>
+        <p>Test the calculation engine with different combinations</p>
+
+        <div class="all-tests">
+            <button id="run-all-btn">🚀 Run All Tests</button>
+            <button id="clear-btn" class="secondary">Clear Results</button>
+        </div>
+
+        <div id="loading-message" class="loading">Loading modules...</div>
+
+        <div class="test-grid" style="display: none;">
+            <!-- Test 1: Basic Calculation -->
+            <div class="test-card">
+                <h3>Test 1: Basic Calculation</h3>
+                <p>T-shirt + Cotton + China</p>
+                <button data-test="1">Run Test</button>
+                <div id="test1-result"></div>
+            </div>
+
+            <!-- Test 2: Sustainable Options -->
+            <div class="test-card">
+                <h3>Test 2: Sustainable Options</h3>
+                <p>T-shirt + Organic Cotton + Portugal</p>
+                <button data-test="2">Run Test</button>
+                <div id="test2-result"></div>
+            </div>
+
+            <!-- Test 3: Custom Blend -->
+            <div class="test-card">
+                <h3>Test 3: Custom Blend</h3>
+                <p>Jeans + 70% Cotton / 30% Recycled Polyester + Vietnam</p>
+                <button data-test="3">Run Test</button>
+                <div id="test3-result"></div>
+            </div>
+
+            <!-- Test 4: Comparison -->
+            <div class="test-card">
+                <h3>Test 4: Compare Materials</h3>
+                <p>Compare Cotton vs Recycled Polyester</p>
+                <button data-test="4">Run Test</button>
+                <div id="test4-result"></div>
+            </div>
+
+            <!-- Test 5: Recommendations -->
+            <div class="test-card">
+                <h3>Test 5: Get Recommendations</h3>
+                <p>High-impact item recommendations</p>
+                <button data-test="5">Run Test</button>
+                <div id="test5-result"></div>
+            </div>
+
+            <!-- Test 6: Error Handling -->
+            <div class="test-card">
+                <h3>Test 6: Error Handling</h3>
+                <p>Test invalid inputs</p>
+                <button data-test="6">Run Test</button>
+                <div id="test6-result"></div>
+            </div>
+
+            <!-- Test 7: Formatters -->
+            <div class="test-card">
+                <h3>Test 7: Formatters</h3>
+                <p>Test all formatting functions</p>
+                <button data-test="7">Run Test</button>
+                <div id="test7-result"></div>
+            </div>
+
+            <!-- Test 8: Equivalents -->
+            <div class="test-card">
+                <h3>Test 8: Carbon Equivalents</h3>
+                <p>Test equivalent calculations</p>
+                <button data-test="8">Run Test</button>
+                <div id="test8-result"></div>
+            </div>
+
+            <!-- Test 9: All Items -->
+            <div class="test-card">
+                <h3>Test 9: All Items</h3>
+                <p>Test calculations for all item types</p>
+                <button data-test="9">Run Test</button>
+                <div id="test9-result"></div>
+            </div>
+
+            <!-- Test 10: Impact Levels -->
+            <div class="test-card">
+                <h3>Test 10: Impact Levels</h3>
+                <p>Test impact level categorization</p>
+                <button data-test="10">Run Test</button>
+                <div id="test10-result"></div>
+            </div>
+
+            <!-- Test 11: Blend Validation -->
+            <div class="test-card">
+                <h3>Test 11: Blend Validation</h3>
+                <p>Test blend percentage validation</p>
+                <button data-test="11">Run Test</button>
+                <div id="test11-result"></div>
+            </div>
+
+            <!-- Test 12: Share Text -->
+            <div class="test-card">
+                <h3>Test 12: Share Text</h3>
+                <p>Test shareable text generation</p>
+                <button data-test="12">Run Test</button>
+                <div id="test12-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import modules with absolute paths from web server root
+        import { CARBON_DATA, getMaterialsForItem } from '/src/data/carbonData.js';
+        import calculator from '/src/utils/calculator.js';
+        import formatters from '/src/utils/formatters.js';
+
+        // Store modules globally for easier access
+        window.testModules = {
+            CARBON_DATA,
+            calculator,
+            formatters
+        };
+
+        // Test functions
+        const testFunctions = {
+            // Test 1: Basic Calculation
+            runTest1: function() {
+                try {
+                    const result = calculator.calculateCarbon('tshirt', 'cotton', 'china');
+                    
+                    document.getElementById('test1-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <div class="value">${formatters.formatCO2(result.manufacturing)}</div>
+                            <p>Lifecycle: ${formatters.formatCO2(result.lifecycle)}</p>
+                            <p>Formula: ${result.calculation.formula}</p>
+                            <div class="breakdown">
+                                <div class="breakdown-item">🧵 Materials: ${formatters.formatCO2(result.breakdown.materials)}</div>
+                                <div class="breakdown-item">⚡ Energy: ${formatters.formatCO2(result.breakdown.energy)}</div>
+                                <div class="breakdown-item">🚚 Transport: ${formatters.formatCO2(result.breakdown.transport)}</div>
+                                <div class="breakdown-item">🏭 Other: ${formatters.formatCO2(result.breakdown.other)}</div>
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test1-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 2: Sustainable Options
+            runTest2: function() {
+                try {
+                    const result = calculator.calculateCarbon('tshirt', 'organic_cotton', 'portugal');
+                    const impact = formatters.getImpactLevel(result.manufacturing);
+                    
+                    document.getElementById('test2-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <div class="value">${formatters.formatCO2(result.manufacturing)}</div>
+                            <span class="impact-level impact-${impact.level}">${impact.emoji} ${impact.label}</span>
+                            <p>${impact.description}</p>
+                            <p>Range: ${formatters.formatRange(result.manufacturingRange.min, result.manufacturingRange.max)}</p>
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test2-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 3: Custom Blend
+            runTest3: function() {
+                try {
+                    const customBlend = {
+                        components: [
+                            { material: 'cotton', percentage: 70 },
+                            { material: 'recycled_polyester', percentage: 30 }
+                        ]
+                    };
+                    const result = calculator.calculateCarbon('jeans', customBlend, 'vietnam');
+                    
+                    document.getElementById('test3-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <div class="value">${formatters.formatCO2(result.manufacturing)}</div>
+                            <p>Blend Multiplier: ${result.calculation.materialMultiplier}</p>
+                            <p>Material: ${formatters.formatMaterial(customBlend)}</p>
+                            <table>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Percentage</th>
+                                    <th>Multiplier</th>
+                                </tr>
+                                <tr>
+                                    <td>Cotton</td>
+                                    <td>70%</td>
+                                    <td>1.0</td>
+                                </tr>
+                                <tr>
+                                    <td>Recycled Polyester</td>
+                                    <td>30%</td>
+                                    <td>0.35</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test3-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 4: Comparison
+            runTest4: function() {
+                try {
+                    const calc1 = calculator.calculateCarbon('tshirt', 'cotton', 'global');
+                    const calc2 = calculator.calculateCarbon('tshirt', 'recycled_polyester', 'global');
+                    const comparison = calculator.compareCalculations(calc2, calc1);
+                    
+                    document.getElementById('test4-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <p><strong>Cotton:</strong> ${formatters.formatCO2(calc1.manufacturing)}</p>
+                            <p><strong>Recycled Polyester:</strong> ${formatters.formatCO2(calc2.manufacturing)}</p>
+                            <div class="success">
+                                Recycled polyester has ${comparison.comparison}
+                            </div>
+                            <p>Difference: ${formatters.formatCO2(comparison.difference)}</p>
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test4-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 5: Recommendations
+            runTest5: function() {
+                try {
+                    const result = calculator.calculateCarbon('jeans', 'cotton', 'china');
+                    const recommendations = calculator.getRecommendations(result);
+                    
+                    let recHtml = '<div class="recommendations">';
+                    recommendations.forEach(rec => {
+                        recHtml += `
+                            <div class="recommendation-item">
+                                <h5>${rec.title}</h5>
+                                <p>${rec.description}</p>
+                            </div>
+                        `;
+                    });
+                    recHtml += '</div>';
+                    
+                    document.getElementById('test5-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <p>Found ${recommendations.length} recommendations</p>
+                            ${recHtml}
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test5-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 6: Error Handling
+            runTest6: function() {
+                const tests = [
+                    { itemId: 'invalid_item', material: 'cotton', locationId: 'global', expectedError: 'Invalid item' },
+                    { itemId: 'tshirt', material: 'invalid_material', locationId: 'global', expectedError: 'Invalid material' },
+                    { itemId: 'tshirt', material: 'cotton', locationId: 'invalid_location', expectedError: 'Invalid location' },
+                    { itemId: 'tshirt', material: { components: [{ material: 'cotton', percentage: 50 }] }, locationId: 'global', expectedError: 'Percentages must sum to 100%' }
+                ];
+
+                let resultsHtml = '<div class="result"><h4>Error Handling Tests</h4>';
+                let passCount = 0;
+
+                tests.forEach((test, index) => {
+                    try {
+                        calculator.calculateCarbon(test.itemId, test.material, test.locationId);
+                        resultsHtml += `<div class="error">Test ${index + 1}: ❌ Expected error but none thrown</div>`;
+                    } catch (error) {
+                        if (error.message.includes(test.expectedError)) {
+                            resultsHtml += `<div class="success">Test ${index + 1}: ✅ Correct error: "${error.message}"</div>`;
+                            passCount++;
+                        } else {
+                            resultsHtml += `<div class="error">Test ${index + 1}: ❌ Wrong error: "${error.message}"</div>`;
+                        }
+                    }
+                });
+
+                resultsHtml += `<p><strong>${passCount}/${tests.length} tests passed</strong></p></div>`;
+                document.getElementById('test6-result').innerHTML = resultsHtml;
+            },
+
+            // Test 7: Formatters
+            runTest7: function() {
+                const tests = [
+                    { func: 'formatCO2', args: [10.5], expected: '10.5 kg CO₂e' },
+                    { func: 'formatCO2', args: [10.5, false], expected: '11 kg CO₂e' },
+                    { func: 'formatRange', args: [5.2, 9.8], expected: '5.2 - 9.8 kg' },
+                    { func: 'formatPercentage', args: [65.4], expected: '65.4%' },
+                    { func: 'formatPercentage', args: [15.5, true], expected: '+15.5%' },
+                    { func: 'formatNumber', args: [1234567], expected: '1,234,567' },
+                    { func: 'getImpactEmoji', args: [3], expected: '🟢' },
+                    { func: 'getImpactEmoji', args: [10], expected: '🟡' },
+                    { func: 'getImpactEmoji', args: [25], expected: '🟠' },
+                    { func: 'getImpactEmoji', args: [35], expected: '🔴' }
+                ];
+
+                let resultsHtml = '<div class="result"><h4>Formatter Tests</h4><table><tr><th>Function</th><th>Input</th><th>Output</th><th>Status</th></tr>';
+
+                tests.forEach(test => {
+                    const result = formatters[test.func](...test.args);
+                    const passed = result === test.expected;
+                    resultsHtml += `
+                        <tr>
+                            <td>${test.func}</td>
+                            <td>${JSON.stringify(test.args)}</td>
+                            <td>${result}</td>
+                            <td>${passed ? '✅' : '❌'}</td>
+                        </tr>
+                    `;
+                });
+
+                resultsHtml += '</table></div>';
+                document.getElementById('test7-result').innerHTML = resultsHtml;
+            },
+
+            // Test 8: Equivalents
+            runTest8: function() {
+                try {
+                    const co2Value = 10;
+                    const equivalents = calculator.getEquivalents(co2Value);
+                    
+                    let equivHtml = '<div class="equivalents">';
+                    Object.entries(equivalents).forEach(([key, equiv]) => {
+                        equivHtml += `<p>${formatters.formatEquivalent(equiv)}</p>`;
+                    });
+                    equivHtml += '</div>';
+                    
+                    document.getElementById('test8-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <p>For ${formatters.formatCO2(co2Value)}:</p>
+                            ${equivHtml}
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test8-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            },
+
+            // Test 9: All Items
+            runTest9: function() {
+                const items = Object.keys(CARBON_DATA.ITEMS);
+                let resultsHtml = '<div class="result"><h4>All Items Test</h4><table><tr><th>Item</th><th>Default Material</th><th>Carbon (kg)</th><th>Status</th></tr>';
+
+                items.forEach(itemId => {
+                    try {
+                        const item = CARBON_DATA.ITEMS[itemId];
+                        const result = calculator.calculateCarbon(itemId, item.defaultMaterial, 'global');
+                        resultsHtml += `
+                            <tr>
+                                <td>${item.emoji} ${item.name}</td>
+                                <td>${item.defaultMaterial}</td>
+                                <td>${result.manufacturing}</td>
+                                <td>✅</td>
+                            </tr>
+                        `;
+                    } catch (error) {
+                        resultsHtml += `
+                            <tr>
+                                <td>${itemId}</td>
+                                <td colspan="2">${error.message}</td>
+                                <td>❌</td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                resultsHtml += '</table></div>';
+                document.getElementById('test9-result').innerHTML = resultsHtml;
+            },
+
+            // Test 10: Impact Levels
+            runTest10: function() {
+                const testValues = [2, 8, 20, 35];
+                let resultsHtml = '<div class="result"><h4>Impact Level Tests</h4>';
+
+                testValues.forEach(value => {
+                    const impact = formatters.getImpactLevel(value);
+                    resultsHtml += `
+                        <div style="margin: 10px 0;">
+                            <span class="impact-level impact-${impact.level}">${impact.emoji} ${value} kg: ${impact.label}</span>
+                        </div>
+                    `;
+                });
+
+                resultsHtml += '</div>';
+                document.getElementById('test10-result').innerHTML = resultsHtml;
+            },
+
+            // Test 11: Blend Validation
+            runTest11: function() {
+                const blendTests = [
+                    {
+                        name: 'Valid 100%',
+                        blend: { components: [{ material: 'cotton', percentage: 60 }, { material: 'polyester', percentage: 40 }] },
+                        shouldPass: true
+                    },
+                    {
+                        name: 'Invalid 80%',
+                        blend: { components: [{ material: 'cotton', percentage: 50 }, { material: 'polyester', percentage: 30 }] },
+                        shouldPass: false
+                    },
+                    {
+                        name: 'Invalid 120%',
+                        blend: { components: [{ material: 'cotton', percentage: 70 }, { material: 'polyester', percentage: 50 }] },
+                        shouldPass: false
+                    },
+                    {
+                        name: 'Three Materials',
+                        blend: { components: [
+                            { material: 'cotton', percentage: 50 },
+                            { material: 'polyester', percentage: 30 },
+                            { material: 'elastane', percentage: 20 }
+                        ]},
+                        shouldPass: true
+                    }
+                ];
+
+                let resultsHtml = '<div class="result"><h4>Blend Validation Tests</h4>';
+
+                blendTests.forEach(test => {
+                    try {
+                        const multiplier = calculator.calculateBlendMultiplier(test.blend.components);
+                        if (test.shouldPass) {
+                            resultsHtml += `<div class="success">${test.name}: ✅ Valid (multiplier: ${multiplier.toFixed(3)})</div>`;
+                        } else {
+                            resultsHtml += `<div class="error">${test.name}: ❌ Should have failed but didn't</div>`;
+                        }
+                    } catch (error) {
+                        if (!test.shouldPass) {
+                            resultsHtml += `<div class="success">${test.name}: ✅ Correctly rejected (${error.message})</div>`;
+                        } else {
+                            resultsHtml += `<div class="error">${test.name}: ❌ Should have passed (${error.message})</div>`;
+                        }
+                    }
+                });
+
+                resultsHtml += '</div>';
+                document.getElementById('test11-result').innerHTML = resultsHtml;
+            },
+
+            // Test 12: Share Text
+            runTest12: function() {
+                try {
+                    const result = calculator.calculateCarbon('dress', 'polyester', 'bangladesh');
+                    const shareText = formatters.createShareText(result);
+                    
+                    document.getElementById('test12-result').innerHTML = `
+                        <div class="result">
+                            <h4>✅ Test Passed</h4>
+                            <p>Generated share text:</p>
+                            <pre>${shareText}</pre>
+                        </div>
+                    `;
+                } catch (error) {
+                    document.getElementById('test12-result').innerHTML = `
+                        <div class="error">❌ Test Failed: ${error.message}</div>
+                    `;
+                }
+            }
+        };
+
+        // Run all tests
+        function runAllTests() {
+            for (let i = 1; i <= 12; i++) {
+                testFunctions[`runTest${i}`]();
+            }
+        }
+
+        // Clear all results
+        function clearAllResults() {
+            for (let i = 1; i <= 12; i++) {
+                document.getElementById(`test${i}-result`).innerHTML = '';
+            }
+        }
+
+        // Set up event listeners after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide loading message and show tests
+            document.getElementById('loading-message').style.display = 'none';
+            document.querySelector('.test-grid').style.display = 'grid';
+
+            // Set up button event listeners
+            document.getElementById('run-all-btn').addEventListener('click', runAllTests);
+            document.getElementById('clear-btn').addEventListener('click', clearAllResults);
+
+            // Set up individual test buttons
+            document.querySelectorAll('button[data-test]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const testNum = e.target.getAttribute('data-test');
+                    testFunctions[`runTest${testNum}`]();
+                });
+            });
+
+            // Auto-run Test 1
+            testFunctions.runTest1();
+        });
+    </script>
+</body>
+</html>

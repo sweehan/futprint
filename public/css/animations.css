@@ -1,0 +1,355 @@
+/* Smooth transitions and animations for Phase 6 */
+
+/* Base transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Number counting animation */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pulse animation for buttons */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Step transitions */
+.step-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.step-container.entering {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.step-container.leaving {
+  animation: slideInLeft 0.3s ease-out reverse;
+}
+
+/* Card hover effects */
+.card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Button animations */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Loading states */
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #10B981;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Number animation class */
+.number-animate {
+  display: inline-block;
+  animation: countUp 0.6s ease-out;
+}
+
+/* Progress bar animation */
+.progress-bar {
+  position: relative;
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #10B981;
+  border-radius: 2px;
+  transition: width 0.5s ease-out;
+}
+
+/* Install button animation */
+#installButton {
+  animation: pulse 2s infinite;
+}
+
+/* Update banner animation */
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #3B82F6;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  animation: slideInRight 0.3s ease-out;
+  z-index: 1000;
+}
+
+.update-banner button {
+  background: white;
+  color: #3B82F6;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  margin-left: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.update-banner button:hover {
+  transform: scale(1.05);
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #10B981;
+  fill: none;
+  animation: checkmark 0.6s ease-in-out forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: checkmark 0.3s ease-in-out 0.3s forwards;
+}
+
+/* Mobile-specific animations */
+@media (max-width: 768px) {
+  .card:hover {
+    transform: none;
+  }
+  
+  .card:active {
+    transform: scale(0.98);
+  }
+  
+  /* Disable hover effects on mobile */
+  @media (hover: none) {
+    .card:hover {
+      transform: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+/* Confetti animation for successful calculation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: #10B981;
+  animation: confetti-fall 3s linear;
+  pointer-events: none;
+}
+
+.confetti:nth-child(2n) {
+  background: #3B82F6;
+  animation-duration: 2.5s;
+}
+
+.confetti:nth-child(3n) {
+  background: #F59E0B;
+  animation-duration: 3.5s;
+}
+
+/* Gesture hint animations */
+@keyframes tap-hint {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.tap-hint {
+  animation: tap-hint 1.5s ease-in-out infinite;
+}
+
+/* Results reveal animation */
+@keyframes result-reveal {
+  0% {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.result-card {
+  animation: result-reveal 0.6s var(--ease-elastic);
+}
+
+/* Comparison bar animation */
+@keyframes bar-grow {
+  from {
+    width: 0;
+  }
+}
+
+.comparison-bar {
+  animation: bar-grow 1s var(--ease-out-expo) forwards;
+  background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+}

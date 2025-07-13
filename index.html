@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Carbon Calculator - Development</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10B981">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #10B981;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: #374151;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .test-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .test-link {
+            display: block;
+            padding: 16px;
+            background: #F3F4F6;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #374151;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .test-link:hover {
+            background: #E5E7EB;
+            border-color: #10B981;
+            transform: translateY(-2px);
+        }
+        
+        .test-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .test-desc {
+            font-size: 14px;
+            color: #6B7280;
+        }
+        
+        .directory-structure {
+            background: #F3F4F6;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .status.complete {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status.in-progress {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fashion Carbon Calculator</h1>
+        <p class="subtitle">Development Progress & Test Pages</p>
+        
+        <div class="section">
+            <h2>Development Phases</h2>
+            <div class="test-grid">
+                <a href="public/tests/calculator-engine-test.html" class="test-link">
+                    <div class="test-title">Phase 1-4: Calculator Engine <span class="status complete">Complete</span></div>
+                    <div class="test-desc">Core calculation engine with React components and data structure</div>
+                </a>
+                
+                <a href="public/tests/phase5-data-collection-test.html" class="test-link">
+                    <div class="test-title">Phase 5: Data Collection <span class="status complete">Complete</span></div>
+                    <div class="test-desc">Google Sheets integration for analytics and data collection</div>
+                </a>
+                
+                <a href="public/tests/phase6-pwa-test.html" class="test-link">
+                    <div class="test-title">Phase 6: PWA Features <span class="status complete">Complete</span></div>
+                    <div class="test-desc">Progressive Web App with offline support and installation</div>
+                </a>
+                
+                <a href="public/tests/phase7-help-system-test.html" class="test-link">
+                    <div class="test-title">Phase 7: Help System <span class="status complete">Complete</span></div>
+                    <div class="test-desc">Comprehensive help with tooltips, modals, and progressive disclosure</div>
+                </a>
+                
+                <a href="public/tests/phase8-animations-pwa-test.html" class="test-link">
+                    <div class="test-title">Phase 8: Animations & Polish <span class="status complete">Complete</span></div>
+                    <div class="test-desc">Enhanced animations, loading states, and PWA improvements</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Phase 9: Testing & Validation <span class="status in-progress">In Progress</span></h2>
+            <div class="test-grid">
+                <a href="public/tests/calculator-unit-tests.html" class="test-link" style="border: 2px solid #10B981;">
+                    <div class="test-title">🧪 Full Test Suite</div>
+                    <div class="test-desc">Comprehensive unit tests with detailed results and filtering</div>
+                </a>
+                
+                <a href="public/tests/phase9-test-runner.html" class="test-link">
+                    <div class="test-title">⚡ Quick Test View</div>
+                    <div class="test-desc">Minimal test runner for rapid verification</div>
+                </a>
+                
+                <a href="public/tests/phase9-test-summary.html" class="test-link">
+                    <div class="test-title">📊 Test Coverage Summary</div>
+                    <div class="test-desc">Overview of all test suites and coverage metrics</div>
+                </a>
+                
+                <a href="public/tests/phase9-error-diagnostic.html" class="test-link" style="border: 2px solid #EF4444;">
+                    <div class="test-title">🔍 Error Diagnostic</div>
+                    <div class="test-desc">Debug tool to identify test failures</div>
+                </a>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 16px; background: #F3F4F6; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: #374151;">Test Statistics</h3>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li><strong>6 Test Suites</strong> completed</li>
+                    <li><strong>57 Unit Tests</strong> covering all critical paths</li>
+                    <li><strong>75% Coverage</strong> (Steps 1-6 of 8 complete)</li>
+                    <li>Tests include: Engine, Validation, Data Integrity, Accuracy, Integration, Error Handling</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Project Structure</h2>
+            <div class="directory-structure">
+futprint/
+├── index.html (this file)
+├── manifest.json
+├── service-worker.js
+├── offline.html
+├── public/
+│   ├── css/
+│   │   ├── animations.css
+│   │   └── help-system.css
+│   ├── js/
+│   │   ├── help-content.js
+│   │   ├── loading-states.js
+│   │   ├── mobile-help.js
+│   │   ├── modal-system.js
+│   │   ├── number-animation.js
+│   │   ├── progressive-disclosure.js
+│   │   ├── pwa-app.js
+│   │   └── tooltip-system.js
+│   └── tests/
+│       ├── calculator-engine-test.html
+│       ├── phase5-data-collection-test.html
+│       ├── phase6-pwa-test.html
+│       ├── phase7-help-system-test.html
+│       ├── phase8-animations-pwa-test.html
+│       ├── calculator-unit-tests.html (Phase 9 - Full Test Suite)
+│       ├── phase9-calculator-tests.js (Test Implementation)
+│       ├── phase9-test-runner.html (Quick Test View)
+│       └── phase9-test-summary.html (Coverage Summary)
+├── src/
+│   ├── components/
+│   │   ├── Calculator.jsx
+│   │   └── Calculator_old.jsx
+│   ├── data/
+│   │   └── carbonData.js
+│   └── utils/
+│       ├── calculator.js
+│       ├── formatters.js
+│       └── googleSheets.js
+└── docs/
+    └── mvpDD.txt
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Features Implemented</h2>
+            <ul>
+                <li>✅ Carbon footprint calculator for fashion items</li>
+                <li>✅ Material and location multipliers</li>
+                <li>✅ React-based component architecture</li>
+                <li>✅ Google Sheets data collection</li>
+                <li>✅ Progressive Web App with offline support</li>
+                <li>✅ Comprehensive help system</li>
+                <li>✅ Smooth animations and transitions</li>
+                <li>✅ Number counting animations</li>
+                <li>✅ Loading states and network indicators</li>
+                <li>✅ Mobile-responsive design</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Quick Start</h2>
+            <ol>
+                <li>Test the latest version: <a href="public/tests/phase8-animations-pwa-test.html">Phase 8 Test Page</a></li>
+                <li>The app works offline once loaded</li>
+                <li>Can be installed as a PWA on supported devices</li>
+                <li>All test pages include interactive controls to verify features</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>

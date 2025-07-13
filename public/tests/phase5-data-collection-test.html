@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 5: Data Collection Integration Test</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .test-section { 
+            background: #f3f4f6; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .test-pass {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .test-fail {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .test-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        .data-display {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin: 10px 0;
+        }
+        .data-display pre {
+            background: #f9fafb;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="test-console" style="padding: 20px; max-width: 1200px; margin: 0 auto;"></div>
+
+    <script type="text/babel">
+        // Import the Google Sheets utilities
+        const googleSheetsUtils = (() => {
+            // Generate anonymous session ID
+            const generateSessionId = () => {
+                return Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+            };
+
+            // Detect device type
+            const getDeviceType = () => {
+                const userAgent = navigator.userAgent || '';
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+                const isTablet = /iPad|Android/i.test(userAgent) && !/Mobile/i.test(userAgent);
+                
+                if (isTablet) return 'tablet';
+                if (isMobile) return 'mobile';
+                return 'desktop';
+            };
+
+            // Track user path through calculator
+            class UserPathTracker {
+                constructor() {
+                    this.path = [];
+                    this.startTime = Date.now();
+                }
+
+                addStep(step) {
+                    this.path.push({
+                        step,
+                        timestamp: Date.now() - this.startTime
+                    });
+                }
+
+                getPath() {
+                    return this.path.map(p => p.step).join(' → ');
+                }
+
+                getTimings() {
+                    return this.path.map(p => `${p.step}:${p.timestamp}ms`).join(', ');
+                }
+
+                reset() {
+                    this.path = [];
+                    this.startTime = Date.now();
+                }
+            }
+
+            // Prepare calculation data for submission
+            const prepareSubmissionData = (calculationState, sessionId, pathTracker) => {
+                const {
+                    item,
+                    material,
+                    materialMode,
+                    customMaterials,
+                    location,
+                    results
+                } = calculationState;
+
+                // Determine material details
+                let materialType = materialMode;
+                let materialDetails = '';
+                
+                if (materialMode === 'single') {
+                    materialDetails = material;
+                } else if (materialMode === 'blend') {
+                    materialDetails = '50/50 blend';
+                } else if (materialMode === 'custom' && customMaterials) {
+                    materialDetails = customMaterials
+                        .map(m => `${m.material}: ${m.percentage}%`)
+                        .join(', ');
+                }
+
+                return {
+                    timestamp: new Date().toISOString(),
+                    item: item || 'unknown',
+                    materialType: materialType || 'unknown',
+                    materialDetails: materialDetails || 'none',
+                    location: location || 'global',
+                    manufacturingCO2: results?.manufacturing || 0,
+                    lifecycleCO2: results?.lifecycle || 0,
+                    userPath: pathTracker.getPath(),
+                    deviceType: getDeviceType(),
+                    sessionId: sessionId,
+                    customPercentage: materialMode === 'custom',
+                    calculationTime: pathTracker.getTimings()
+                };
+            };
+
+            // Mock Google Form submission for testing
+            const submitToGoogleForm = async (data) => {
+                console.log('Mock Google Form submission:', data);
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return { success: true, data };
+            };
+
+            return {
+                generateSessionId,
+                getDeviceType,
+                UserPathTracker,
+                prepareSubmissionData,
+                submitToGoogleForm
+            };
+        })();
+
+        const { generateSessionId, getDeviceType, UserPathTracker, prepareSubmissionData, submitToGoogleForm } = googleSheetsUtils;
+
+        // Test Component
+        const DataCollectionTest = () => {
+            const [testResults, setTestResults] = React.useState([]);
+            const [submittedData, setSubmittedData] = React.useState([]);
+            const [isRunning, setIsRunning] = React.useState(false);
+
+            const addTestResult = (test, passed, details) => {
+                setTestResults(prev => [...prev, { test, passed, details, timestamp: new Date().toISOString() }]);
+            };
+
+            const runTests = async () => {
+                setIsRunning(true);
+                setTestResults([]);
+                setSubmittedData([]);
+
+                // Test 1: Session ID Generation
+                try {
+                    const sessionId1 = generateSessionId();
+                    const sessionId2 = generateSessionId();
+                    
+                    const isUnique = sessionId1 !== sessionId2;
+                    const hasValidFormat = /^[a-z0-9]{7,}[a-z0-9]+$/.test(sessionId1);
+                    
+                    addTestResult(
+                        'Session ID Generation',
+                        isUnique && hasValidFormat,
+                        `ID1: ${sessionId1}, ID2: ${sessionId2}, Unique: ${isUnique}, Valid Format: ${hasValidFormat}`
+                    );
+                } catch (error) {
+                    addTestResult('Session ID Generation', false, error.message);
+                }
+
+                // Test 2: Device Detection
+                try {
+                    const deviceType = getDeviceType();
+                    const validTypes = ['mobile', 'tablet', 'desktop'];
+                    const isValid = validTypes.includes(deviceType);
+                    
+                    addTestResult(
+                        'Device Type Detection',
+                        isValid,
+                        `Detected: ${deviceType}, User Agent: ${navigator.userAgent.substring(0, 50)}...`
+                    );
+                } catch (error) {
+                    addTestResult('Device Type Detection', false, error.message);
+                }
+
+                // Test 3: User Path Tracking
+                try {
+                    const tracker = new UserPathTracker();
+                    
+                    // Simulate user journey
+                    tracker.addStep('item');
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    tracker.addStep('material');
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                    tracker.addStep('location');
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    tracker.addStep('result');
+                    
+                    const path = tracker.getPath();
+                    const timings = tracker.getTimings();
+                    
+                    const expectedPath = 'item → material → location → result';
+                    const pathCorrect = path === expectedPath;
+                    const hasTimings = timings.includes('ms');
+                    
+                    addTestResult(
+                        'User Path Tracking',
+                        pathCorrect && hasTimings,
+                        `Path: ${path}\nTimings: ${timings}`
+                    );
+                } catch (error) {
+                    addTestResult('User Path Tracking', false, error.message);
+                }
+
+                // Test 4: Data Preparation - Single Material
+                try {
+                    const sessionId = generateSessionId();
+                    const tracker = new UserPathTracker();
+                    tracker.addStep('item');
+                    tracker.addStep('material');
+                    tracker.addStep('location');
+                    tracker.addStep('result');
+                    
+                    const data = prepareSubmissionData(
+                        {
+                            item: 'tshirt',
+                            material: 'Cotton',
+                            materialMode: 'single',
+                            location: 'china',
+                            results: { manufacturing: 10.5, lifecycle: 13.65 }
+                        },
+                        sessionId,
+                        tracker
+                    );
+                    
+                    const hasRequiredFields = data.item && data.materialType && data.location && 
+                                            data.manufacturingCO2 !== undefined && data.sessionId;
+                    
+                    addTestResult(
+                        'Data Preparation - Single Material',
+                        hasRequiredFields,
+                        JSON.stringify(data, null, 2)
+                    );
+                    
+                    setSubmittedData(prev => [...prev, { type: 'Single Material', data }]);
+                } catch (error) {
+                    addTestResult('Data Preparation - Single Material', false, error.message);
+                }
+
+                // Test 5: Data Preparation - Custom Blend
+                try {
+                    const sessionId = generateSessionId();
+                    const tracker = new UserPathTracker();
+                    tracker.addStep('item');
+                    tracker.addStep('material');
+                    tracker.addStep('location');
+                    tracker.addStep('result');
+                    
+                    const data = prepareSubmissionData(
+                        {
+                            item: 'jeans',
+                            material: 'Custom Blend',
+                            materialMode: 'custom',
+                            customMaterials: [
+                                { material: 'cotton', percentage: 70 },
+                                { material: 'polyester', percentage: 30 }
+                            ],
+                            location: 'bangladesh',
+                            results: { manufacturing: 30.4, lifecycle: 39.52 }
+                        },
+                        sessionId,
+                        tracker
+                    );
+                    
+                    const hasCustomDetails = data.materialDetails.includes('70%') && data.customPercentage === true;
+                    
+                    addTestResult(
+                        'Data Preparation - Custom Blend',
+                        hasCustomDetails,
+                        JSON.stringify(data, null, 2)
+                    );
+                    
+                    setSubmittedData(prev => [...prev, { type: 'Custom Blend', data }]);
+                } catch (error) {
+                    addTestResult('Data Preparation - Custom Blend', false, error.message);
+                }
+
+                // Test 6: Form Submission
+                try {
+                    const testData = {
+                        item: 'dress',
+                        materialType: 'single',
+                        materialDetails: 'polyester',
+                        location: 'vietnam',
+                        manufacturingCO2: 21.56,
+                        lifecycleCO2: 28.03,
+                        sessionId: generateSessionId(),
+                        deviceType: getDeviceType(),
+                        userPath: 'item → material → location → result',
+                        customPercentage: false
+                    };
+                    
+                    const result = await submitToGoogleForm(testData);
+                    
+                    addTestResult(
+                        'Google Form Submission',
+                        result.success === true,
+                        `Submission ${result.success ? 'successful' : 'failed'}`
+                    );
+                    
+                    setSubmittedData(prev => [...prev, { type: 'Form Submission Test', data: testData }]);
+                } catch (error) {
+                    addTestResult('Google Form Submission', false, error.message);
+                }
+
+                // Test 7: Path Reset
+                try {
+                    const tracker = new UserPathTracker();
+                    tracker.addStep('item');
+                    tracker.addStep('material');
+                    
+                    const pathBefore = tracker.getPath();
+                    tracker.reset();
+                    tracker.addStep('new-item');
+                    const pathAfter = tracker.getPath();
+                    
+                    const resetWorked = pathBefore.includes('material') && pathAfter === 'new-item';
+                    
+                    addTestResult(
+                        'Path Tracker Reset',
+                        resetWorked,
+                        `Before reset: ${pathBefore}, After reset: ${pathAfter}`
+                    );
+                } catch (error) {
+                    addTestResult('Path Tracker Reset', false, error.message);
+                }
+
+                setIsRunning(false);
+            };
+
+            const simulateFullCalculation = async () => {
+                const sessionId = generateSessionId();
+                const tracker = new UserPathTracker();
+                
+                // Simulate full user journey
+                tracker.addStep('start');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                tracker.addStep('item');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                tracker.addStep('material');
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                tracker.addStep('location');
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                tracker.addStep('result');
+                
+                const data = prepareSubmissionData(
+                    {
+                        item: 'shoes',
+                        material: 'Mixed Synthetics',
+                        materialMode: 'blend',
+                        location: 'turkey',
+                        results: { manufacturing: 14.7, lifecycle: 19.11 }
+                    },
+                    sessionId,
+                    tracker
+                );
+                
+                const result = await submitToGoogleForm(data);
+                
+                setSubmittedData(prev => [...prev, { 
+                    type: 'Full Calculation Simulation', 
+                    data,
+                    submissionResult: result 
+                }]);
+                
+                addTestResult(
+                    'Full Calculation Simulation',
+                    true,
+                    'Complete user journey simulated and data submitted'
+                );
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto p-6">
+                    <h1 className="text-3xl font-bold mb-6">Phase 5: Data Collection Integration Test</h1>
+                    
+                    <div className="test-section">
+                        <h2 className="text-xl font-semibold mb-4">Test Controls</h2>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={runTests}
+                                disabled={isRunning}
+                                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
+                            >
+                                {isRunning ? 'Running Tests...' : 'Run All Tests'}
+                            </button>
+                            <button
+                                onClick={simulateFullCalculation}
+                                className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                            >
+                                Simulate Full Calculation
+                            </button>
+                        </div>
+                    </div>
+
+                    {testResults.length > 0 && (
+                        <div className="test-section">
+                            <h2 className="text-xl font-semibold mb-4">Test Results</h2>
+                            {testResults.map((result, index) => (
+                                <div key={index} className={`test-result ${result.passed ? 'test-pass' : 'test-fail'}`}>
+                                    <div className="font-semibold">
+                                        {result.passed ? '✓' : '✗'} {result.test}
+                                    </div>
+                                    <div className="text-sm mt-1 whitespace-pre-wrap">{result.details}</div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {submittedData.length > 0 && (
+                        <div className="test-section">
+                            <h2 className="text-xl font-semibold mb-4">Submitted Data Log</h2>
+                            {submittedData.map((submission, index) => (
+                                <div key={index} className="data-display">
+                                    <h3 className="font-semibold mb-2">{submission.type}</h3>
+                                    <pre>{JSON.stringify(submission.data, null, 2)}</pre>
+                                    {submission.submissionResult && (
+                                        <div className="mt-2 text-sm text-green-600">
+                                            Submission Result: {JSON.stringify(submission.submissionResult)}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="test-section">
+                        <h2 className="text-xl font-semibold mb-4">Phase 5 Features</h2>
+                        <ul className="space-y-2">
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Anonymous session ID generation for tracking calculations</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Device type detection (mobile/tablet/desktop)</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>User path tracking through calculator steps</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Timing data for each step</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Google Forms submission preparation</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Support for single materials, blends, and custom mixes</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>LocalStorage integration for saved calculations</span>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                <span>Development logging for debugging</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="test-section bg-yellow-50 border border-yellow-300">
+                        <h2 className="text-xl font-semibold mb-4 text-yellow-800">Setup Instructions</h2>
+                        <ol className="list-decimal list-inside space-y-2 text-yellow-800">
+                            <li>Create a Google Form with the required fields</li>
+                            <li>Get the form ID from the URL (e.g., forms.google.com/d/YOUR_FORM_ID_HERE/edit)</li>
+                            <li>Replace 'YOUR_FORM_ID_HERE' in googleSheets.js with your actual form ID</li>
+                            <li>Map the field entry IDs (inspect the form or use the pre-filled link method)</li>
+                            <li>Update the fieldIds object in googleSheets.js with correct entry IDs</li>
+                            <li>Test submission with this test page</li>
+                        </ol>
+                    </div>
+
+                    <div className="test-section">
+                        <h2 className="text-xl font-semibold mb-4">Console Output</h2>
+                        <div className="text-sm text-gray-600">
+                            Open browser console to see detailed logs during development mode
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the test component
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DataCollectionTest />);
+    </script>
+</body>
+</html>

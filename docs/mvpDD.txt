@@ -1,0 +1,577 @@
+Detailed Design for Carbon Calculator MVP
+
+
+--------------
+
+UI/UX Flow with Smart Defaults
+Step 1: Item Selection
+Select your item type:
+[T-shirt] [Jeans] [Dress] [Shoes]
+
+Default shown: T-shirt - 7.5 kg CO2e (average)
+ℹ️ This represents the carbon emissions from manufacturing an average t-shirt
+
+
+--------------
+
+Step 2: Material Composition
+Material composition:
+○ 100% Single Material (default)
+   [Cotton ▼] - 7.2 kg CO2e
+○ Mixed Materials (50/50 blend)
+   [Cotton ▼] + [Polyester ▼] - 6.4 kg CO2e
+○ Custom Mix
+   [Cotton ▼] [70]% + [Polyester ▼] [30]%
+
+ℹ️ Most fast fashion uses blended materials. Don't know? Use our default.
+
+--------------
+
+Step 3: Manufacturing Location
+Where was it made?
+[🌍 Global Average (default)] - 7.5 kg CO2e
+[🇨🇳 China] [🇮🇳 India] [🇧🇩 Bangladesh] [🇻🇳 Vietnam] [🇹🇷 Turkey]
+
+ℹ️ Check the label. No info? Global average accounts for typical production mix.
+
+
+--------------
+
+Step 4: Results Display
+Your Carbon Footprint:
+━━━━━━━━━━━━━━━━━━━━━
+Manufacturing: 7.5 kg CO2e
+(Range: 5.2 - 9.8 kg based on industry data)
+
+Full Lifecycle: 9.8 kg CO2e
+(+30% for washing, wearing, disposal)
+
+Equivalent to:
+- 🚗 Driving 30 miles
+- 📱 Charging your phone 912 times
+- 🌳 What 1 tree absorbs in 4 months
+
+[Save This Item] [Calculate Another]
+
+
+--------------
+
+Default Values Table
+ItemDefault MaterialManufacturing CO2eFull Lifecycle CO2eT-shirt100% Cotton7.5 kg9.8 kgJeansCotton/Elastane blend32 kg41.6 kgDress100% Polyester22 kg28.6 kgShoesMixed synthetic14 kg18.2 kg
+Material Multipliers (from base)
+
+
+--------------
+
+Single Materials:
+
+Hemp: 0.48x
+Organic Cotton: 0.73x
+Cotton: 1.0x (baseline)
+Polyester: 0.85x
+Recycled Polyester: 0.35x
+Wool: 2.4x
+Nylon: 1.1x
+
+--------------
+
+Common Blends (pre-calculated):
+
+Cotton/Polyester (50/50): 0.925x
+Cotton/Elastane (95/5): 1.05x
+Wool/Polyester (50/50): 1.625x
+
+--------------
+
+Location Multipliers
+
+Global Average: 1.0x (baseline)
+Bangladesh: 0.95x
+Vietnam: 0.98x
+Turkey: 1.05x
+China: 1.4x
+India: 1.25x
+Portugal/EU: 0.85x
+USA: 0.9x
+
+--------------
+
+Help Text Examples
+? Material Composition:
+"The fabric content affects carbon footprint significantly. Natural fibers like cotton require water and land but are biodegradable. Synthetics like polyester are petroleum-based but often require less energy to produce. Check your garment's care label for exact percentages."
+? Manufacturing Location:
+"Where your clothes are made matters! Countries with coal-heavy electricity grids (like China and India) have higher emissions. European manufacturing typically has lower emissions due to cleaner energy. The 'Made in' label tells you where final assembly happened."
+? Lifecycle Emissions:
+"Manufacturing is just the beginning. Washing, drying, and eventual disposal add ~30% more emissions. You can reduce this by washing in cold water, air drying, and keeping clothes longer."
+
+--------------
+
+Mobile-First Responsive Design
+
+Desktop (>768px):
+
+Horizontal step progression
+Side-by-side comparisons
+Detailed explanations visible
+
+
+Mobile (<768px):
+
+Vertical card-based flow
+Swipeable steps
+Collapsible help sections
+Large touch targets (min 44px)
+Bottom sheet for results
+
+
+--------------
+
+Progressive Web App Features:
+
+Offline capability for calculations
+Save previous calculations locally
+Share results functionality
+Add to home screen prompt
+
+
+--------------
+
+Technical Architecture
+Frontend:
+- React/Next.js for component reusability
+- Tailwind CSS for responsive design
+- Chart.js for visualization
+- PWA manifest for app-like experience
+
+
+--------------
+
+State Management:
+- React Context for calculator state
+- Local storage for saved items
+- No backend needed for MVP
+
+
+--------------
+
+Calculation Engine:
+- Pure JavaScript functions
+- Immutable calculation pipeline
+- Unit tests for each multiplier
+Data Transparency Display
+Each result should show:
+ℹ️ How we calculated this:
+Base (T-shirt): 7.5 kg
+Material (100% Cotton): ×1.0
+Location (China): ×1.4
+━━━━━━━━━━━━━━━━━
+Total: 10.5 kg CO2e
+
+Sources: UK DEFRA 2024, Carbonfact Research
+Last updated: January 2025
+
+--------------------------
+
+Data collection using Google Forms
+
+Data Points to Collect:
+- Timestamp (automatic)
+- Item Type
+- Material Type (simplified: single/blend/custom)
+- Material Details (if custom)
+- Manufacturing Location
+- Calculated Carbon (manufacturing)
+- Calculated Carbon (lifecycle)
+- User Selected Custom % (boolean)
+- Session ID (anonymous)
+- User Agent (mobile/desktop)
+
+Google Sheet Structure:
+| Timestamp | Item | Material | Location | Mfg CO2 | Full CO2 | Custom | Session |
+|-----------|------|----------|----------|---------|----------|---------|---------|
+| 2025-01-12| Shirt| Cotton   | China    | 10.5    | 13.65    | No      | abc123  |
+Privacy-Friendly Extras:
+javascript// Generate anonymous session ID
+const sessionId = Math.random().toString(36).substring(7);
+
+// Detect device type
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+// Track calculation path (for improving UX)
+const userPath = ['item', 'material', 'location', 'result'];
+Setup Steps:
+
+Create a Google Form with all fields
+Get the form response URL and field IDs
+Test with manual submission
+Implement in calculator
+Set up Google Sheets dashboard
+
+--------------------------
+
+Data Architecture
+
+src/
+├── data/
+│   ├── carbonData.js      # All calculation data
+│   ├── helpTexts.js       # ? help content
+│   └── equivalents.js     # CO2 equivalents (driving, trees, etc.)
+├── utils/
+│   ├── calculator.js      # Calculation logic
+│   ├── formatters.js      # Number formatting
+│   └── validators.js      # Data validation
+└── components/
+    └── Calculator.jsx     # UI component
+
+
+Sample Data Structure
+
+------------------------------------------
+
+javascript// carbonData.js
+export const CARBON_DATA = {
+  // Base values from research
+  BASE_VALUES: {
+    items: {
+      tshirt: {
+        manufacturing: 7.5,
+        breakdown: {
+          materials: 2.1,
+          spinning: 0.8,
+          weaving: 1.5,
+          dyeing: 2.2,
+          assembly: 0.9
+        }
+      }
+    }
+  },
+  
+  // Multipliers
+  MULTIPLIERS: {
+    materials: {
+      cotton: 1.0,
+      polyester: 0.85,
+      // ...
+    },
+    locations: {
+      global: 1.0,
+      china: 1.4,
+      // ...
+    }
+  },
+  
+  // Metadata
+  META: {
+    version: "1.0.0",
+    lastUpdated: "2025-01-12",
+    sources: [
+      "UK DEFRA 2024",
+      "Carbonfact Research 2024",
+      "Frontiers Environmental Science 2022"
+    ]
+  }
+};
+
+
+------------------------------------------
+
+
+Data Update Strategy
+
+For MVP (Manual Updates):
+
+Store data in version-controlled JSON
+Update quarterly based on new research
+Tag releases with data versions
+
+
+For Scale (Semi-Automated):
+
+------------------------------------------
+
+javascript// data/updateData.js
+// Run quarterly to fetch latest factors
+async function updateCarbonData() {
+  const sources = [
+    { name: 'DEFRA', url: 'https://...' },
+    { name: 'Climatiq', api: true }
+  ];
+  
+  // Fetch and merge data
+  // Generate new carbonData.js file
+  // Create PR for review
+}
+
+------------------------------------------
+
+Where Each Data Point Comes From
+Data TypeSourceUpdate FrequencyBase item valuesResearch compilationQuarterlyMaterial multipliersDEFRA + academic papersAnnuallyLocation factorsIEA electricity dataAnnuallyConversion factorsEPA equivalenciesRarelyHelp textCustom writtenAs needed
+
+Example Calculation Flow
+
+------------------------------------------
+
+javascript// User selects: T-shirt, Cotton/Polyester blend, Made in China
+
+// 1. Load base data
+const baseValue = CARBON_DATA.BASE_VALUES.items.tshirt.manufacturing; // 7.5
+
+// 2. Calculate material multiplier
+const materialMultiplier = 
+  (CARBON_DATA.MULTIPLIERS.materials.cotton * 0.5) +      // 1.0 * 0.5 = 0.5
+  (CARBON_DATA.MULTIPLIERS.materials.polyester * 0.5);    // 0.85 * 0.5 = 0.425
+  // Total: 0.925
+
+// 3. Apply location multiplier
+const locationMultiplier = CARBON_DATA.MULTIPLIERS.locations.china; // 1.4
+
+// 4. Calculate final value
+const manufacturing = baseValue * materialMultiplier * locationMultiplier;
+// 7.5 * 0.925 * 1.4 = 9.7125 kg CO2e
+
+// 5. Log to Google Sheets
+submitToGoogleForm({
+  item: 'tshirt',
+  material: 'cotton_polyester_blend',
+  location: 'china',
+  carbonMfg: 9.71,
+  carbonFull: 12.62
+});
+
+------------------------------------------
+
+MVP Build Process 
+Phase 1: Project Setup & Data Layer
+Step 1.1: Project Structure
+
+futprint/
+├── public/
+│   ├── favicon.ico
+│   └── manifest.json (PWA)
+├── src/
+│   ├── data/
+│   │   ├── carbonData.js
+│   │   ├── helpTexts.js
+│   │   └── equivalents.js
+│   ├── utils/
+│   │   ├── calculator.js
+│   │   ├── formatters.js
+│   │   └── googleSheets.js
+│   ├── components/
+│   │   ├── Calculator.jsx
+│   │   ├── ItemSelector.jsx
+│   │   ├── MaterialSelector.jsx
+│   │   ├── LocationSelector.jsx
+│   │   ├── Results.jsx
+│   │   └── HelpTooltip.jsx
+│   ├── styles/
+│   │   └── globals.css
+│   └── pages/
+│       └── index.js
+├── package.json
+└── README.md
+Step 1.2: First Component - Data Layer Start with carbonData.js containing all research values:
+	•	Item base values
+	•	Material multipliers
+	•	Location multipliers
+	•	Common blends
+	•	Metadata and sources
+
+Phase 2: Core Calculation Engine
+Step 2.1: Calculator Utility Build calculator.js with pure functions:
+	•	calculateBaseCarbon(item, material, location)
+	•	calculateBlendedMaterial(materials[])
+	•	applyLocationMultiplier(baseValue, location)
+	•	calculateLifecycle(manufacturingValue)
+Step 2.2: Formatters & Helpers Create formatters.js:
+	•	formatCO2(value) → "7.5 kg CO2e"
+	•	formatRange(min, max) → "5.2 - 9.8 kg"
+	•	getEquivalent(co2Value) → driving/trees/charging comparisons
+Phase 3: UI Components (Mobile-First)
+Step 3.1: Component Hierarchy
+
+<Calculator>
+  <ProgressBar currentStep={step} />
+  
+  <ItemSelector 
+    selected={item}
+    onSelect={setItem}
+    showHelp={true}
+  />
+  
+  <MaterialSelector
+    selected={material}
+    mode={materialMode} // single/blend/custom
+    onSelect={setMaterial}
+    showHelp={true}
+  />
+  
+  <LocationSelector
+    selected={location}
+    onSelect={setLocation}
+    showHelp={true}
+  />
+  
+  <Results
+    data={calculationResult}
+    onSave={saveToSheets}
+    onReset={startOver}
+  />
+</Calculator>
+Step 3.2: Visual Design System
+
+Colors:
+- Primary: #10B981 (green)
+- Secondary: #3B82F6 (blue)
+- Background: #F9FAFB
+- Text: #111827
+- Error: #EF4444
+
+Typography:
+- Headings: Inter/System font
+- Body: Inter/System font
+- Sizes: 14px base, 16px mobile
+
+Spacing:
+- Base unit: 4px
+- Component padding: 16px
+- Card spacing: 24px
+
+Components:
+- Cards with subtle shadows
+- Large touch targets (48px min)
+- Clear visual hierarchy
+- Smooth transitions
+Phase 4: User Flow & Interactions
+Step 4.1: Mobile Flow
+
+Screen 1: Item Selection
+┌─────────────────────┐
+│ Fashion Carbon      │
+│ Calculator          │
+│                     │
+│ Select item type:   │
+│ ┌─────┐ ┌─────┐    │
+│ │ 👕  │ │ 👖  │    │
+│ │Shirt│ │Jeans│    │
+│ └─────┘ └─────┘    │
+│ ┌─────┐ ┌─────┐    │
+│ │ 👗  │ │ 👟  │    │
+│ │Dress│ │Shoes│    │
+│ └─────┘ └─────┘    │
+│                     │
+│ [Continue →]        │
+└─────────────────────┘
+
+Screen 2: Material Selection
+┌─────────────────────┐
+│ ← T-shirt           │
+│                     │
+│ Material:           │
+│ ○ 100% Single       │
+│   [Cotton ▼]        │
+│ ○ 50/50 Blend       │
+│ ○ Custom Mix        │
+│                     │
+│ Default: 7.5 kg CO2e│
+│ ℹ️ What's this?     │
+│                     │
+│ [Continue →]        │
+└─────────────────────┘
+
+Screen 3: Location
+┌─────────────────────┐
+│ ← T-shirt・Cotton   │
+│                     │
+│ Where made:         │
+│ ┌─────────────────┐ │
+│ │🌍 Global Average │ │
+│ └─────────────────┘ │
+│ ┌─────┐ ┌─────┐    │
+│ │ 🇨🇳  │ │ 🇮🇳  │    │
+│ │China│ │India│    │
+│ └─────┘ └─────┘    │
+│                     │
+│ [Calculate →]       │
+└─────────────────────┘
+
+Screen 4: Results
+┌─────────────────────┐
+│ Your Carbon Impact  │
+│                     │
+│ ┌─────────────────┐ │
+│ │ Manufacturing    │ │
+│ │ 10.5 kg CO2e    │ │
+│ │ ▓▓▓▓▓▓▓▓░░     │ │
+│ └─────────────────┘ │
+│                     │
+│ = Driving 42 miles  │
+│ = 1,281 phone charges│
+│                     │
+│ [Save] [New Item]   │
+└─────────────────────┘
+Step 4.2: Desktop Layout
+	•	Horizontal stepper
+	•	All options visible
+	•	Live preview of carbon impact
+	•	Detailed breakdowns in sidebar
+Phase 5: Data Collection Integration
+Step 5.1: Google Form Setup Create form with fields:
+	1	Timestamp (automatic)
+	2	Item Type
+	3	Material Type
+	4	Material Details
+	5	Location
+	6	Manufacturing CO2
+	7	Lifecycle CO2
+	8	User Path
+	9	Device Type
+	10	Session ID
+Step 5.2: Submission Logic
+
+javascript
+// Trigger points:
+1. On calculation complete
+2. On "Save" button click
+3. Include anonymous session tracking
+4. No PII collected
+Phase 6: Progressive Enhancement
+Step 6.1: PWA Features
+	•	Service worker for offline
+	•	App manifest
+	•	Install prompt
+	•	Cache calculation data
+Step 6.2: Animations & Polish
+	•	Smooth transitions between steps
+	•	Number animations on results
+	•	Loading states
+	•	Success feedback
+Build Order Summary
+	1	Data Layer (carbonData.js) - All calculation values
+	2	Calculator Engine (calculator.js) - Pure functions
+	3	Basic UI Shell (Calculator.jsx) - Container component
+	4	Item Selector - First interactive component
+	5	Google Sheets Integration - Test data logging
+	6	Material Selector - With blend logic
+	7	Location Selector - With flag icons
+	8	Results Display - With equivalents
+	9	Help System - Tooltips and modals
+	10	PWA Features - Offline capability
+	11	Polish - Animations, transitions
+	12	Testing - Calculation validation
+Key Design Decisions
+Mobile-First Approach:
+	•	Vertical card flow
+	•	Bottom sheets for complex selections
+	•	Swipe gestures between steps
+	•	Thumb-friendly button placement
+Data Transparency:
+	•	Show calculation breakdown
+	•	Link to sources
+	•	Display ranges not just averages
+	•	Version tracking
+User Experience:
+	•	Always show defaults
+	•	Progressive disclosure
+	•	Clear visual feedback
+	•	Minimal required inputs

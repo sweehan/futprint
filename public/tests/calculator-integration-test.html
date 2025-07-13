@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Component Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        button {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculator Component Integration Test</h1>
+        
+        <div class="test-section">
+            <h2>Module Import Test</h2>
+            <div id="importTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Calculator Function Test</h2>
+            <button onclick="testCalculator()">Run Calculator Tests</button>
+            <div id="calculatorTest"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Data Structure Test</h2>
+            <button onclick="testDataStructure()">Test Data Structure</button>
+            <div id="dataTest"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the modules
+        import { calculateCarbon, getEquivalents } from '/src/utils/calculator.js';
+        import { CARBON_DATA } from '/src/data/carbonData.js';
+        
+        // Make functions available globally for button clicks
+        window.calculateCarbon = calculateCarbon;
+        window.getEquivalents = getEquivalents;
+        window.CARBON_DATA = CARBON_DATA;
+        
+        // Test imports
+        const importDiv = document.getElementById('importTest');
+        try {
+            importDiv.innerHTML = `
+                <p class="success">✅ Calculator module imported successfully</p>
+                <p class="success">✅ Carbon data imported successfully</p>
+                <p>Available functions: calculateCarbon, getEquivalents</p>
+                <p>Data items: ${Object.keys(CARBON_DATA.ITEMS).join(', ')}</p>
+            `;
+        } catch (error) {
+            importDiv.innerHTML = `<p class="error">❌ Import error: ${error.message}</p>`;
+        }
+        
+        // Calculator test function
+        window.testCalculator = function() {
+            const testDiv = document.getElementById('calculatorTest');
+            let html = '<h3>Test Results:</h3>';
+            
+            try {
+                // Test 1: Basic calculation
+                const result1 = calculateCarbon('tshirt', 'cotton', 'global');
+                html += `<p class="success">✅ Basic calculation: T-shirt, Cotton, Global = ${result1.manufacturing} kg CO2e</p>`;
+                
+                // Test 2: With blend
+                const result2 = calculateCarbon('jeans', 'cotton_elastane_blend', 'china');
+                html += `<p class="success">✅ Blend calculation: Jeans, Cotton/Elastane, China = ${result2.manufacturing} kg CO2e</p>`;
+                
+                // Test 3: Custom blend
+                const customBlend = {
+                    components: [
+                        { material: 'cotton', percentage: 70 },
+                        { material: 'polyester', percentage: 30 }
+                    ]
+                };
+                const result3 = calculateCarbon('dress', customBlend, 'portugal');
+                html += `<p class="success">✅ Custom blend: Dress, 70/30 Cotton/Polyester, EU = ${result3.manufacturing} kg CO2e</p>`;
+                
+                // Test 4: Equivalents
+                const equiv = getEquivalents(10);
+                html += `<p class="success">✅ Equivalents for 10kg CO2e: ${JSON.stringify(equiv.driving)} miles driving</p>`;
+                
+            } catch (error) {
+                html += `<p class="error">❌ Test error: ${error.message}</p>`;
+            }
+            
+            testDiv.innerHTML = html;
+        };
+        
+        // Data structure test
+        window.testDataStructure = function() {
+            const dataDiv = document.getElementById('dataTest');
+            let html = '<h3>Data Structure:</h3>';
+            
+            try {
+                html += '<h4>Items:</h4><ul>';
+                Object.entries(CARBON_DATA.ITEMS).forEach(([id, item]) => {
+                    html += `<li>${item.emoji} ${item.name}: ${item.baseCarbon} kg base carbon</li>`;
+                });
+                html += '</ul>';
+                
+                html += '<h4>Materials:</h4><ul>';
+                Object.entries(CARBON_DATA.MATERIALS).forEach(([id, material]) => {
+                    html += `<li>${material.name}: ${material.multiplier}x multiplier</li>`;
+                });
+                html += '</ul>';
+                
+                html += '<h4>Locations:</h4><ul>';
+                Object.entries(CARBON_DATA.LOCATIONS).forEach(([id, location]) => {
+                    html += `<li>${location.name}: ${location.multiplier}x multiplier</li>`;
+                });
+                html += '</ul>';
+                
+            } catch (error) {
+                html += `<p class="error">❌ Data error: ${error.message}</p>`;
+            }
+            
+            dataDiv.innerHTML = html;
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 6: PWA & Progressive Enhancement Test</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#10B981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/animations.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #F9FAFB;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #111827;
+            text-align: center;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section h2 {
+            color: #10B981;
+            margin-top: 0;
+        }
+        
+        .btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #installButton {
+            display: none;
+            background: #3B82F6;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .status.info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .carbon-result {
+            background: #F3F4F6;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .carbon-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #10B981;
+            margin: 10px 0;
+        }
+        
+        .equivalents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .equivalent-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .equivalent-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .equivalent-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .card.selected {
+            border-color: #10B981;
+        }
+        
+        .progress-demo {
+            margin: 20px 0;
+        }
+        
+        .carbon-progress {
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .carbon-progress-fill {
+            height: 100%;
+            background: #10B981;
+            width: 0;
+        }
+        
+        /* Loading styles inline for testing */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 9999;
+        }
+        
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border: 3px solid #E5E7EB;
+            border-top: 3px solid #10B981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .button-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+            height: 20px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .success-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .checkmark {
+            width: 52px;
+            height: 52px;
+            margin-bottom: 16px;
+        }
+        
+        .checkmark-circle,
+        .checkmark-check {
+            stroke: #10B981;
+            stroke-width: 2;
+            fill: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌱 Phase 6: PWA & Progressive Enhancement Test</h1>
+        
+        <!-- PWA Installation Test -->
+        <div class="test-section">
+            <h2>1. PWA Installation</h2>
+            <p>Test Progressive Web App features:</p>
+            <button id="installButton" class="btn">Install App</button>
+            <button onclick="checkPWAStatus()" class="btn">Check PWA Status</button>
+            <div id="pwaStatus" class="status info" style="display: none;"></div>
+        </div>
+        
+        <!-- Service Worker Test -->
+        <div class="test-section">
+            <h2>2. Service Worker & Offline</h2>
+            <p>Test offline functionality:</p>
+            <button onclick="checkServiceWorker()" class="btn">Check Service Worker</button>
+            <button onclick="testOfflineMode()" class="btn">Test Offline Mode</button>
+            <div id="swStatus" class="status info" style="display: none;"></div>
+        </div>
+        
+        <!-- Animation Tests -->
+        <div class="test-section">
+            <h2>3. Animations & Transitions</h2>
+            <p>Test smooth animations:</p>
+            
+            <!-- Card hover animations -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <div class="card" onclick="selectCard(this)">
+                    <div>👕 T-shirt</div>
+                    <div style="color: #6B7280; font-size: 14px;">Click to select</div>
+                </div>
+                <div class="card" onclick="selectCard(this)">
+                    <div>👖 Jeans</div>
+                    <div style="color: #6B7280; font-size: 14px;">Click to select</div>
+                </div>
+            </div>
+            
+            <button onclick="testStepTransition()" class="btn" style="margin-top: 10px;">Test Step Transition</button>
+            <div id="stepContainer" class="step-container" style="margin-top: 10px; padding: 20px; background: #F3F4F6; border-radius: 8px; display: none;">
+                Step content with fade-in animation
+            </div>
+        </div>
+        
+        <!-- Number Animation Test -->
+        <div class="test-section">
+            <h2>4. Number Animations</h2>
+            <p>Test carbon footprint result animations:</p>
+            <button onclick="animateResults()" class="btn">Animate Results</button>
+            
+            <div class="carbon-result">
+                <div>Your Carbon Footprint:</div>
+                <div class="carbon-value">0.0 kg CO2e</div>
+                
+                <div class="carbon-progress">
+                    <div class="carbon-progress-fill"></div>
+                </div>
+                
+                <div class="equivalents">
+                    <div class="equivalent-item">
+                        <div class="equivalent-icon">🚗</div>
+                        <div class="equivalent-driving equivalent-value">0</div>
+                        <div style="font-size: 12px; color: #6B7280;">miles driven</div>
+                    </div>
+                    <div class="equivalent-item">
+                        <div class="equivalent-icon">📱</div>
+                        <div class="equivalent-phone equivalent-value">0</div>
+                        <div style="font-size: 12px; color: #6B7280;">phone charges</div>
+                    </div>
+                    <div class="equivalent-item">
+                        <div class="equivalent-icon">🌳</div>
+                        <div class="equivalent-tree equivalent-value">0</div>
+                        <div style="font-size: 12px; color: #6B7280;">tree months</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading States Test -->
+        <div class="test-section">
+            <h2>5. Loading States</h2>
+            <p>Test various loading indicators:</p>
+            <button onclick="testGlobalLoading()" class="btn">Global Loading</button>
+            <button onclick="testButtonLoading(this)" class="btn">Button Loading</button>
+            <button onclick="testSkeletonLoading()" class="btn">Skeleton Loading</button>
+            <button onclick="testSuccessAnimation()" class="btn">Success Animation</button>
+            
+            <div id="skeletonContainer" style="margin-top: 20px;"></div>
+        </div>
+        
+        <!-- Mobile Responsiveness Test -->
+        <div class="test-section">
+            <h2>6. Mobile Responsiveness</h2>
+            <p>Resize your browser window to test mobile layout and animations.</p>
+            <div class="status info">Current viewport: <span id="viewportSize"></span></div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="../js/pwa-app.js"></script>
+    <script src="../js/number-animation.js"></script>
+    <script src="../js/loading-states.js"></script>
+    
+    <script>
+        // Update viewport size
+        function updateViewportSize() {
+            document.getElementById('viewportSize').textContent = `${window.innerWidth} x ${window.innerHeight}`;
+        }
+        updateViewportSize();
+        window.addEventListener('resize', updateViewportSize);
+        
+        // Check PWA status
+        function checkPWAStatus() {
+            const status = document.getElementById('pwaStatus');
+            status.style.display = 'block';
+            
+            const checks = [];
+            
+            // Check if running as installed PWA
+            if (window.pwaFunctions && window.pwaFunctions.isStandalone()) {
+                checks.push('✅ Running as installed PWA');
+            } else {
+                checks.push('ℹ️ Running in browser');
+            }
+            
+            // Check manifest
+            if (document.querySelector('link[rel="manifest"]')) {
+                checks.push('✅ Manifest linked');
+            } else {
+                checks.push('❌ Manifest not found');
+            }
+            
+            // Check HTTPS
+            if (location.protocol === 'https:' || location.hostname === 'localhost') {
+                checks.push('✅ Secure context (HTTPS/localhost)');
+            } else {
+                checks.push('❌ Not in secure context');
+            }
+            
+            status.innerHTML = checks.join('<br>');
+        }
+        
+        // Check service worker
+        function checkServiceWorker() {
+            const status = document.getElementById('swStatus');
+            status.style.display = 'block';
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg) {
+                        status.className = 'status success';
+                        status.textContent = `✅ Service Worker active (scope: ${reg.scope})`;
+                    } else {
+                        status.className = 'status error';
+                        status.textContent = '❌ Service Worker not registered';
+                    }
+                });
+            } else {
+                status.className = 'status error';
+                status.textContent = '❌ Service Worker not supported';
+            }
+        }
+        
+        // Test offline mode
+        function testOfflineMode() {
+            const status = document.getElementById('swStatus');
+            status.style.display = 'block';
+            status.className = 'status info';
+            status.textContent = 'To test offline: Open DevTools → Network → Set to Offline → Refresh page';
+        }
+        
+        // Card selection
+        function selectCard(card) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        }
+        
+        // Step transition
+        function testStepTransition() {
+            const container = document.getElementById('stepContainer');
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                container.classList.add('entering');
+                setTimeout(() => container.classList.remove('entering'), 300);
+            } else {
+                container.classList.add('leaving');
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    container.classList.remove('leaving');
+                }, 300);
+            }
+        }
+        
+        // Animate results
+        function animateResults() {
+            const carbonValue = 25.5;
+            const equivalents = {
+                driving: 102,
+                phoneCharges: 3108,
+                treeMonths: 4
+            };
+            
+            // Use the number animation functions
+            if (window.numberAnimations) {
+                window.numberAnimations.initializeResultAnimations(carbonValue, equivalents);
+            }
+        }
+        
+        // Test loading states
+        function testGlobalLoading() {
+            window.loadingManager.showLoading('Calculating carbon footprint...');
+            setTimeout(() => {
+                window.loadingManager.hideLoading();
+            }, 2000);
+        }
+        
+        function testButtonLoading(button) {
+            window.loadingManager.setButtonLoading(button, true, 'Processing...');
+            setTimeout(() => {
+                window.loadingManager.setButtonLoading(button, false);
+            }, 2000);
+        }
+        
+        function testSkeletonLoading() {
+            const container = document.getElementById('skeletonContainer');
+            window.loadingManager.showSkeletonLoading(container, 2);
+            setTimeout(() => {
+                container.innerHTML = '<div class="status success">Content loaded!</div>';
+            }, 2000);
+        }
+        
+        function testSuccessAnimation() {
+            const successDiv = document.createElement('div');
+            successDiv.style.position = 'relative';
+            successDiv.style.height = '100px';
+            document.querySelector('.test-section:last-child').appendChild(successDiv);
+            window.loadingManager.showSuccess(successDiv, 'Calculation complete!');
+        }
+        
+        // Add loading styles dynamically
+        if (window.loadingStyles) {
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = window.loadingStyles;
+            document.head.appendChild(styleSheet);
+        }
+    </script>
+</body>
+</html>
