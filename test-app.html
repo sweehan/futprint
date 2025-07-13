@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fashion Carbon Calculator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #10B981;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #10B981;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Fashion Carbon Calculator - App Test</h1>
+        
+        <div id="status-container">
+            <div class="status info">Loading test status...</div>
+        </div>
+        
+        <h2>App Preview:</h2>
+        <iframe src="index.html" id="app-frame"></iframe>
+        
+        <h2>Quick Links:</h2>
+        <ul>
+            <li><a href="index.html" target="_blank">Open App in New Tab</a></li>
+            <li><a href="index-dev.html">Development Dashboard</a></li>
+            <li><a href="public/tests/calculator-unit-tests.html">Run Unit Tests</a></li>
+        </ul>
+    </div>
+    
+    <script>
+        const statusContainer = document.getElementById('status-container');
+        const appFrame = document.getElementById('app-frame');
+        
+        function addStatus(message, type) {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.textContent = message;
+            statusContainer.appendChild(div);
+        }
+        
+        // Clear initial status
+        statusContainer.innerHTML = '';
+        
+        // Check service worker
+        if ('serviceWorker' in navigator) {
+            addStatus('✓ Service Worker API available', 'success');
+        } else {
+            addStatus('✗ Service Worker API not available', 'error');
+        }
+        
+        // Check React
+        try {
+            if (window.React) {
+                addStatus('✓ React loaded', 'success');
+            }
+        } catch (e) {
+            addStatus('✗ React not loaded in parent frame', 'info');
+        }
+        
+        // Monitor iframe load
+        appFrame.addEventListener('load', () => {
+            addStatus('✓ App iframe loaded', 'success');
+            
+            // Try to access iframe content (might fail due to same-origin policy)
+            try {
+                const iframeDoc = appFrame.contentDocument || appFrame.contentWindow.document;
+                const root = iframeDoc.getElementById('root');
+                if (root && root.children.length > 0) {
+                    addStatus('✓ React app rendered in iframe', 'success');
+                }
+            } catch (e) {
+                addStatus('✓ App loaded (cross-origin check blocked)', 'info');
+            }
+        });
+        
+        appFrame.addEventListener('error', (e) => {
+            addStatus(`✗ Error loading app: ${e.message}`, 'error');
+        });
+        
+        // Check for console errors
+        window.addEventListener('error', (e) => {
+            if (e.filename && e.filename.includes('index.html')) {
+                addStatus(`✗ App error: ${e.message}`, 'error');
+            }
+        });
+        
+        addStatus('Test page loaded successfully', 'success');
+    </script>
+</body>
+</html>
